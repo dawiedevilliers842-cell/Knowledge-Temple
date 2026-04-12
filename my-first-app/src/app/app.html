@@ -1,0 +1,17 @@
+<div class="main-container">
+  <mat-toolbar class="top-nav">
+    <span class="site-title">My CV Space</span>
+    <nav class="nav-links">
+      <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a mat-button routerLink="/about" routerLinkActive="active-link">About</a>
+      <a mat-button routerLink="/about-me" routerLinkActive="active-link">About Me</a>
+      <a mat-button routerLink="/technology-stack" routerLinkActive="active-link">Technology Stack</a>
+      <a mat-button routerLink="/quotes" routerLinkActive="active-link">Quotes</a>
+      <a mat-button routerLink="/playground" routerLinkActive="active-link">3D Playground</a>
+    </nav>
+  </mat-toolbar>
+
+  <main class="router-container">
+    <router-outlet />
+  </main>
+</div>

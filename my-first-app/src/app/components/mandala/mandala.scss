@@ -1,0 +1,24 @@
+.mandala-container {
+    width: 500px;
+    height: 500px;
+    background-color: #ff000000;
+}
+
+#OuterCircle{
+    transform-origin: center; 
+    animation: rotate 3600s linear infinite;
+}
+
+#InnerCircle{
+    transform-origin: center; 
+    animation: rotate 60s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

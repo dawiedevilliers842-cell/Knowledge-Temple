@@ -1,0 +1,14 @@
+.page-card {
+  max-width: 980px;
+  background: rgba(15, 23, 42, 0.86);
+}
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.stack-grid > mat-card {
+  background: rgba(8, 47, 73, 0.18);
+}
