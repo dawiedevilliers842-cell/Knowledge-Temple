@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
-import { AboutMe } from './about-me/about-me';
-import { Home } from './home/home';
-import { Quotes } from './quotes/quotes';
-import { TechnologyStack } from './technology-stack/technology-stack';
+import { AboutMe } from './pages/about-me/about-me';
+
+import { Cv } from './pages/cv/cv';
+import { Home } from './pages/home/home';
+import { Quotes } from './pages/quotes/quotes';
+import { TechnologyStack } from './pages/technology-stack/technology-stack';
 
 export const routes: Routes = [
   {
@@ -13,6 +15,11 @@ export const routes: Routes = [
     path: 'about-me',
     title: 'About Me',
     component: AboutMe,
+  },
+  {
+    path: 'cv',
+    title: 'Curriculum Vitae',
+    component: Cv,
   },
   {
     path: 'technology-stack',

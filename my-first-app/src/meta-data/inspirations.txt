@@ -2,3 +2,6 @@ https://paulstamatiou.com/\
     - Age realtime calculator 
     - Dark/light theme generator button
     - Animated svgs 
+
+https://www.fromjason.xyz/
+    - Like the oldschool sketch art (but doing mandala now)
