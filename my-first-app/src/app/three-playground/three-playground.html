@@ -1,5 +1,15 @@
 <section class="playground-page">
   <h2>Three.js Playground</h2>
   <p>Starter scene with a rotating cube, camera, and lights.</p>
-  <div #canvasContainer class="canvas-host" aria-label="Three.js playground canvas"></div>
+  <div #canvasContainer class="canvas-host" aria-label="Three.js playground canvas">
+    <div
+      #quoteTooltip
+      class="quote-tooltip"
+      role="tooltip"
+      aria-hidden="true"
+    >
+      <p #tooltipQuote class="quote-tooltip__text"></p>
+      <p #tooltipAuthor class="quote-tooltip__author"></p>
+    </div>
+  </div>
 </section>

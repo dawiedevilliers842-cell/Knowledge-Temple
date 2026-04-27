@@ -6,7 +6,7 @@
 
 #OuterCircle{
     transform-origin: center; 
-    animation: rotate 3600s linear infinite;
+    // animation: rotateCounterClockwise 800s linear infinite;
 }
 
 #InnerCircle{
@@ -15,6 +15,15 @@
 }
 
 @keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotateCounterClockwise {
     from {
         transform: rotate(0deg);
     }

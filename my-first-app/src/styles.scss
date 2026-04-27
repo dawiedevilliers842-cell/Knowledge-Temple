@@ -5,6 +5,11 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+
+:root{
+  --mat-toolbar-standard-height: 84px
+}
+
 html {
   height: 100%;
   @include mat.theme(

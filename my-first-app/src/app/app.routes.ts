@@ -1,21 +1,13 @@
 import { Routes } from '@angular/router';
-import { Home } from './home/home';
-import { About } from './about/about';
 import { AboutMe } from './about-me/about-me';
-import { TechnologyStack } from './technology-stack/technology-stack';
+import { Home } from './home/home';
 import { Quotes } from './quotes/quotes';
-import { ThreePlayground } from './three-playground/three-playground';
+import { TechnologyStack } from './technology-stack/technology-stack';
 
 export const routes: Routes = [
   {
     path: '',
-    title: 'Home Page',
     component: Home,
-  },
-  {
-    path: 'about',
-    title: 'About',
-    component: About,
   },
   {
     path: 'about-me',
@@ -32,11 +24,11 @@ export const routes: Routes = [
     title: 'Quotes',
     component: Quotes,
   },
-  {
-    path: 'playground',
-    title: 'Three.js Playground',
-    component: ThreePlayground,
-  },
+  // {
+  //   path: 'playground',
+  //   title: 'Three.js Playground',
+  //   component: ThreePlayground,
+  // },
   {
     path: '**',
     redirectTo: '',
