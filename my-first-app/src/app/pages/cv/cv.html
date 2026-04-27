@@ -4,25 +4,37 @@
         <img src="profile.jpg" alt="Curriculum Vitae">
     </div>
     <div class="content-container">
+        <mat-card>
+            <h2>Personal Information</h2>
+        </mat-card>
         <mat-accordion class="example-headers-align" multi>
-            <mat-expansion-panel>
+            <mat-expansion-panel expanded="true">
                 <mat-expansion-panel-header>
-                    <mat-panel-title> Personal data </mat-panel-title>
+                    <mat-panel-title> Dawie de Villiers - Software Engineer </mat-panel-title>
                     <mat-panel-description>
-                        Type your name and age
                         <mat-icon>account_circle</mat-icon>
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-                <mat-form-field>
-                    <mat-label>First name</mat-label>
-                    <input matInput />
-                </mat-form-field>
+                <div class="profile-skills-container">
+                    <div class="profile-container">
+                        <h3>Profile</h3>
+                        <p> Senior Web developer with extensive experience in Angular 4 – 22,
+                            Recently worked with other SPA libraries such as React and Vue, Have
+                            managed and lead teams in high enterprise corporations and also trained
+                            junior developers. I have a knack for responsive front-ends and I have a
+                            passion for making UI’s elegant and appealing to work with. </p>
+                    </div>
+                    <div class="skills-container highcharts-dark">
+                        <highcharts-chart [constructorType]="chartConstructor" [options]="chartOptions" class="chart" />
+                    </div>
+                </div>
 
-                <mat-form-field>
-                    <mat-label>Age</mat-label>
-                    <input matInput type="number" min="1" />
-                </mat-form-field>
+
+
+
+
+
             </mat-expansion-panel>
             <!-- <mat-expansion-panel disabled>
                 <mat-expansion-panel-header>
@@ -55,5 +67,9 @@
                 <mat-datepicker #picker></mat-datepicker>
             </mat-expansion-panel> -->
         </mat-accordion>
+        <mat-card>
+            <h2>Employment details</h2>
+        </mat-card>
+        <app-employment-container></app-employment-container>
     </div>
 </div>

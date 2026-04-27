@@ -1,0 +1,83 @@
+[
+    {
+        "id": "1",
+        "company": "Sonata One (IDR)",
+        "role": "Senior Angular developer and React developer",
+        "duties": "Maintained and developed Angular and React web components and refactored old Angular and Angular JS code to be aligned with new company architecture and requirements",
+        "projects": [
+            "Angular 16 Project that was hosted inside a ASP.NET MVC shell, the project was hosted as a separate intermediate page transitioning the old system (Angular JS) to the new Angular 17 project template."
+        ],
+        "startDate": "2023-08-01",
+        "endDate": "2026-04-30"
+    },
+    {
+        "id": "2",
+        "company": "Momentum",
+        "role": "Lead Front-End Developer & Web chapter representative",
+        "duties": "Lead Front-End developer responsibilities included client requirement analysis, product design feasibility analysis, business logic troubleshooting, and responsive design/implementation. Web chapter representative responsibilities included skills transfer, developer upskilling, planning development guild sessions, creating team repositories, and assessing Angular developer competence and skillsets.",
+        "projects": [
+            "Angular 12 project interfacing with a GraphQL backend.",
+            "VIA Next: next-generation Momentum VIA platform used by advisers to view and edit clients, track leads and business application progress, upload/download documents, and view Momentum Client 360 profiles.",
+            "Implemented a micro frontend approach using Angular Elements so teams could independently build, test, and deploy components in their own environments.",
+            "Built a POC integrating Google Analytics and interfacing with VIA APIs through GraphQL as a backend-for-frontend (BFF) orchestration layer.",
+            "Third-party libraries used included Highcharts, Google Analytics, Angular OAuth OIDC, and NG Particles."
+        ],
+        "startDate": "2021-03-01",
+        "endDate": "2023-03-31"
+    },
+    {
+        "id": "3",
+        "company": "Allegiance Consulting",
+        "role": "Lead Front-End Developer",
+        "duties": "Built the complete front-end application, handled client interactions, and provided support.",
+        "projects": [
+            "PPS Horizon: financial and retirement planning platform built for PPS Investments.",
+            "Developed the application in Angular and refactored it to support network-speed-aware module preloading.",
+            "Used Angular animation DSL, Redux for state management, observables, and sub-routing patterns.",
+            "Led mobile-readiness implementation after the initial desktop-first build.",
+            "Third-party libraries used included Parallax.js, Redux, Highcharts, and Chart.js."
+        ],
+        "startDate": "2017-03-01",
+        "endDate": "2020-12-31"
+    },
+    {
+        "id": "4",
+        "company": "Gendac",
+        "role": "Web Developer",
+        "duties": "Focused on MVC projects and projects utilizing AngularJS for the front-end.",
+        "projects": [],
+        "startDate": "2016-02-01",
+        "endDate": "2017-02-28"
+    },
+    {
+        "id": "5",
+        "company": "iFluid Development",
+        "role": "Lead Senior Mobile Developer",
+        "duties": "Worked as the lead senior Android mobile developer, delivering education-focused applications with online/offline capabilities, synchronization, and media-rich lesson delivery.",
+        "projects": [
+            "eDisco: university-focused isiXhosa learning application with three lesson modes (Silent, Listen, Speak).",
+            "Implemented PocketSphinx-based speech recognition for the Speak lesson type, including setup, debugging, decoding, and learner feedback workflows.",
+            "Built login, server-driven content downloads (audio, images, JSON lesson objects), lesson generation, offline score persistence, deferred sync, score reconciliation, and cleanup of outdated lessons.",
+            "Study Hall: education platform for downloading exam papers, completing assessments, and submitting results to backend services.",
+            "Delivered shared and version-specific features including login, lesson/image/profile downloads, offline support, token purchases for additional content, profile updates, and both automatic and manual marking flows."
+        ],
+        "startDate": "2015-03-01",
+        "endDate": "2016-01-31"
+    },
+    {
+        "id": "6",
+        "company": "Business Connexion",
+        "role": "Developer",
+        "duties": "Primarily developed mobile applications for Windows Phone and Android, and contributed to hybrid mobile development using Cordova, RhoMobile, Codename One, and Xamarin.",
+        "projects": [
+            "Kids First Aid: mobile first-aid application providing step-by-step emergency guidance for parents and families.",
+            "Implemented key Kids First Aid features including emergency treatment guidance, voice-guided CPR/choking walkthroughs, direct emergency dialing, and GPS-based nearest-hospital discovery.",
+            "Engen: location-based application for finding nearby Engen garages, viewing available facilities and manager details, and navigating to selected locations.",
+            "Built Engen features such as 10km nearby search, specials, emergency calls, check-in token logic based on distance, and user feedback/rating workflows.",
+            "Power Of X: internal BCX social selling platform for employee-driven lead generation and product promotion, later intended for rebranding across organizations.",
+            "Delivered major Power Of X functionality across Android and Windows Phone, including service integrations, product messaging, lead posting/editing/discussion, lead status tracking, commission views, news, and search."
+        ],
+        "startDate": "2013-01-01",
+        "endDate": "2015-03-31"
+    }
+]

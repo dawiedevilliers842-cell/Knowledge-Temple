@@ -1,0 +1,18 @@
+mat-panel-description {
+    display: flex;
+    place-content: end;
+
+}
+
+.employment-details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    // div:nth-child(odd) {
+    //     background-color: #f2f2f2;
+    // }
+
+    // div:nth-child(even) {
+    //     background-color: #ffffff;
+    // }
+}
