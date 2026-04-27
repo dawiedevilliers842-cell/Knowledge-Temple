@@ -29,12 +29,6 @@
                         <highcharts-chart [constructorType]="chartConstructor" [options]="chartOptions" class="chart" />
                     </div>
                 </div>
-
-
-
-
-
-
             </mat-expansion-panel>
             <!-- <mat-expansion-panel disabled>
                 <mat-expansion-panel-header>
@@ -70,6 +64,13 @@
         <mat-card>
             <h2>Employment details</h2>
         </mat-card>
-        <app-employment-container></app-employment-container>
+
+        <div class="employment-history-container">
+            @for (employmentHistory of employmentHistories(); track $index) {
+            <app-employment-container [employmentHistory]="employmentHistory"></app-employment-container>
+            }
+        </div>
+
+
     </div>
 </div>

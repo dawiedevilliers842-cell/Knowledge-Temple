@@ -14,5 +14,5 @@ import { EmploymentHistory } from '../../models/employment-history';
   styleUrl: './employment-container.scss',
 })
 export class EmploymentContainer {
-  @Input() employmentHistory: EmploymentHistory | null = null; // Required  
+  @Input() employmentHistory: EmploymentHistory = {} as EmploymentHistory; // Required  
 }

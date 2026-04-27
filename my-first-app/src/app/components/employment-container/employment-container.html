@@ -1,33 +1,26 @@
 <mat-accordion class="example-headers-align" multi>
     <mat-expansion-panel expanded="true">
         <mat-expansion-panel-header>
-            <mat-panel-title> Sonata One (IDR) </mat-panel-title>
+            <mat-panel-title> {{employmentHistory.company}} </mat-panel-title>
             <mat-panel-description>
-                <p>Aug 2023 – April 2026</p>
-                <mat-icon>account_circle</mat-icon>
+                <p>{{employmentHistory.startDate}} – {{employmentHistory.endDate}}</p>
+                <mat-icon>work</mat-icon>
             </mat-panel-description>
         </mat-expansion-panel-header>
 
         <div class="employment-details-container">
             <div>Role</div>
-            <div>Senior Angular developer and React developer</div>
+            <div>{{employmentHistory.role}}</div>
 
             <div>Duties:</div>
-            <div>Maintained and developed Angular and React web components and refactored
-                old Angular and Angular JS code to be aligned with new company architecture
-                and requirements</div>
+            <div>{{employmentHistory.duties}}</div>
 
+            @for (project of employmentHistory.projects; track $index) {
             <div>Project Description:</div>
-            <div>Angular 16 Project that was hosted inside a ASP.NET MVC shell, the project was
-                hosted as a separate intermediate page transitioning the old system (Angular JS) to
-                the new Angular 17 project template.
-                While I was at the company the tech direction changed from Angular to React
-                and a new project was created using React as the component library and Next.js
-                as the framework.
-                Learned allot about server side rendering and React components. Learned allot
-                about Next.js and the React workflow, hooks state management, refs etc
-                After my tenure using React and Vue I prefer Angular as I feel it is easier to scale,
-                easier to manage and does not have as many external dependencies. </div>
+            <div> {{project}} </div>
+            }
+
+
         </div>
     </mat-expansion-panel>
 </mat-accordion>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -31,7 +31,7 @@ import { EmploymentHistory } from '../../models/employment-history';
 export class Cv {
 
 
-  employmentHistory: EmploymentHistory[] = [];
+  employmentHistories = signal<EmploymentHistory[]>([]);
 
   chartOptions: Highcharts.Options = {
 
@@ -133,8 +133,8 @@ export class Cv {
         }
         return response.json() as Promise<EmploymentHistory[]>;
       })
-      .then((EmploymentHistory) => {
-        this.employmentHistory = EmploymentHistory;
+      .then((employmentHistory) => {
+        this.employmentHistories.set(employmentHistory);
       })
       .catch((error: unknown) => {
         console.error(error);
