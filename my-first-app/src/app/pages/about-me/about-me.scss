@@ -1,8 +1,27 @@
 .page-card {
-  max-width: 900px;
   background: rgba(15, 23, 42, 0.86);
 }
 
 .page-card mat-list-item {
   color: #dbe2ff;
+}
+
+.technologies-container {
+  display: flex;
+  place-content: center space-evenly;
+  align-items: center;
+
+  mat-list {
+    flex: 1;
+  }
+
+  .image-container {
+    flex: 1;
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+  }
 }

@@ -1,76 +1,44 @@
 <div class="cv-container">
     <div class="heading-container">
-        <h1>Curriculum Vitae</h1>
-        <img src="profile.jpg" alt="Curriculum Vitae">
+        <div class="content-container">
+            <mat-accordion class="example-headers-align" multi>
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Dawie de Villiers - Software
+                            Engineer </mat-panel-title>
+                        <mat-panel-description>
+                            <mat-icon>account_circle</mat-icon>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="profile-skills-container">
+                        <div class="profile-container">
+                            <img src="profile.jpg" alt="Curriculum Vitae">
+                            <h3>Profile</h3>
+                            <p> Senior Web developer with extensive experience in Angular 4 – 22,
+                                Recently worked with other SPA libraries such as React and Vue, Have
+                                managed and lead teams in high enterprise corporations and also trained
+                                junior developers. I have a knack for responsive front-ends and I have a
+                                passion for making UI’s elegant and appealing to work with. </p>
+                        </div>
+                        <div class="skills-container highcharts-dark">
+                            <highcharts-chart [constructorType]="chartConstructor" [options]="chartOptions"
+                                class="chart" />
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
     </div>
-    <div class="content-container">
-        <mat-card>
-            <h2>Personal Information</h2>
-        </mat-card>
-        <mat-accordion class="example-headers-align" multi>
-            <mat-expansion-panel expanded="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title> Dawie de Villiers - Software Engineer </mat-panel-title>
-                    <mat-panel-description>
-                        <mat-icon>account_circle</mat-icon>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
 
-                <div class="profile-skills-container">
-                    <div class="profile-container">
-                        <h3>Profile</h3>
-                        <p> Senior Web developer with extensive experience in Angular 4 – 22,
-                            Recently worked with other SPA libraries such as React and Vue, Have
-                            managed and lead teams in high enterprise corporations and also trained
-                            junior developers. I have a knack for responsive front-ends and I have a
-                            passion for making UI’s elegant and appealing to work with. </p>
-                    </div>
-                    <div class="skills-container highcharts-dark">
-                        <highcharts-chart [constructorType]="chartConstructor" [options]="chartOptions" class="chart" />
-                    </div>
-                </div>
-            </mat-expansion-panel>
-            <!-- <mat-expansion-panel disabled>
-                <mat-expansion-panel-header>
-                    <mat-panel-title> Destination </mat-panel-title>
-                    <mat-panel-description>
-                        Type the country name
-                        <mat-icon>map</mat-icon>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
 
-                <mat-form-field>
-                    <mat-label>Country</mat-label>
-                    <input matInput />
-                </mat-form-field>
-            </mat-expansion-panel>
-
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title> Day of the trip </mat-panel-title>
-                    <mat-panel-description>
-                        Inform the date you wish to travel
-                        <mat-icon>date_range</mat-icon>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-
-                <mat-form-field>
-                    <mat-label>Date</mat-label>
-                    <input matInput [matDatepicker]="picker" (focus)="picker.open()" readonly />
-                </mat-form-field>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-expansion-panel> -->
-        </mat-accordion>
+    <div class="employment-history-container">
         <mat-card>
             <h2>Employment details</h2>
         </mat-card>
 
-        <div class="employment-history-container">
-            @for (employmentHistory of employmentHistories(); track $index) {
-            <app-employment-container [employmentHistory]="employmentHistory"></app-employment-container>
-            }
-        </div>
-
-
+        @for (employmentHistory of employmentHistories(); track $index) {
+        <app-employment-container [employmentHistory]="employmentHistory"></app-employment-container>
+        }
     </div>
 </div>

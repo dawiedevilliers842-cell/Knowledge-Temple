@@ -1,6 +1,6 @@
 .heading-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
 
@@ -12,17 +12,21 @@
 }
 
 .content-container {
-
-    mat-card {
-        padding: 0 24px;
-        margin: 16px 0;
-    }
-
-    mat-panel-description {
-        display: flex;
-        place-content: end;
+    mat-expansion-panel-header {
+        pointer-events: none;
 
     }
+}
+
+mat-card {
+    padding: 0 24px;
+    margin: 16px 0;
+}
+
+mat-panel-description {
+    display: flex;
+    place-content: end;
+
 }
 
 .profile-skills-container {

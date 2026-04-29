@@ -4,6 +4,7 @@ export interface EmploymentHistory {
     role: string;
     duties: string;
     projects: string[];
+    technologies: string[];
     startDate: string;
     endDate: string;
 }

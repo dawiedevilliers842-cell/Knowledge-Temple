@@ -4,4 +4,7 @@ You should do this on this day
 
 27 April 
 1) Remove 3js route - check 
-2) A
+2) Added the CV section
+
+29 April
+1) Add rough about me section - ship ready

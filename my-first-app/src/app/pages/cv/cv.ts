@@ -68,7 +68,7 @@ export class Cv {
     yAxis: {
       min: 0,
       title: {
-        text: 'Population (millions)',
+        text: 'Years of experience',
         align: 'high'
       },
       labels: {

@@ -7,6 +7,11 @@
         "projects": [
             "Angular 16 Project that was hosted inside a ASP.NET MVC shell, the project was hosted as a separate intermediate page transitioning the old system (Angular JS) to the new Angular 17 project template."
         ],
+        "technologies": [
+            "Angular",
+            "React",
+            "Git"
+        ],
         "startDate": "2023-08-01",
         "endDate": "2026-04-30"
     },
@@ -17,6 +22,11 @@
         "duties": "Lead Front-End developer responsibilities included client requirement analysis, product design feasibility analysis, business logic troubleshooting, and responsive design/implementation. Web chapter representative responsibilities included skills transfer, developer upskilling, planning development guild sessions, creating team repositories, and assessing Angular developer competence and skillsets.",
         "projects": [
             "VIA Next: an Angular 12 project interfacing with a GraphQL backend for Momentum's next-generation VIA platform, enabling advisers to manage clients, leads, business applications, documents, and Client 360 profiles; implemented using a micro frontend approach with Angular Elements for independent team build/test/deploy, with a Google Analytics POC and third-party libraries including Highcharts, Angular OAuth OIDC, and NG Particles."
+        ],
+        "technologies": [
+            "Angular",
+            "GraphQL",
+            "Git"
         ],
         "startDate": "2021-03-01",
         "endDate": "2023-03-31"
@@ -29,6 +39,10 @@
         "projects": [
             "PPS Horizon: financial and retirement planning platform built for PPS Investments using Angular, including refactoring for network-speed-aware module preloading, Angular animation DSL usage, Redux state management, observables/sub-routing patterns, and mobile-readiness implementation; third-party libraries included Parallax.js, Redux, Highcharts, and Chart.js."
         ],
+        "technologies": [
+            "Angular",
+            "Git"
+        ],
         "startDate": "2017-03-01",
         "endDate": "2020-12-31"
     },
@@ -38,6 +52,10 @@
         "role": "Web Developer",
         "duties": "Focused on MVC projects and projects utilizing AngularJS for the front-end.",
         "projects": [],
+        "technologies": [
+            "Angular",
+            "Git"
+        ],
         "startDate": "2016-02-01",
         "endDate": "2017-02-28"
     },
@@ -49,6 +67,10 @@
         "projects": [
             "eDisco: university-focused isiXhosa learning application with Silent/Listen/Speak lesson modes, PocketSphinx-based speech recognition, login, server-driven downloads (audio/images/JSON lessons), lesson generation, offline score persistence, deferred synchronization, score reconciliation, and outdated lesson cleanup.",
             "Study Hall: education platform where students download and complete exam papers, with features including login, lesson/image/profile downloads, offline capability, token purchases for additional lessons, profile updates, and both automatic and manual marking flows."
+        ],
+        "technologies": [
+            "Android",
+            "Git"
         ],
         "startDate": "2015-03-01",
         "endDate": "2016-01-31"
@@ -62,6 +84,10 @@
             "Kids First Aid: mobile first-aid application with step-by-step emergency guidance, voice-guided CPR/choking walkthroughs, direct emergency dialing, and GPS-based nearest-hospital discovery.",
             "Engen: location-based application for finding nearby Engen garages, viewing available facilities and manager details, navigation, specials, emergency calls, check-in token logic, and user feedback/rating.",
             "Power Of X: internal BCX social selling platform for employee lead generation and product promotion, with functionality for messaging, lead posting/editing/discussion, lead status tracking, commission views, news, and search across Android and Windows Phone."
+        ],
+        "technologies": [
+            "Android",
+            "Git"
         ],
         "startDate": "2013-01-01",
         "endDate": "2015-03-31"

@@ -3,13 +3,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { EmploymentHistory } from '../../models/employment-history';
+import { IconWidget } from '../icon-widget/icon-widget';
 
 @Component({
   selector: 'app-employment-container',
   imports: [
     MatButtonModule,
     MatExpansionModule,
-    MatIconModule,],
+    MatIconModule,
+    IconWidget],
   templateUrl: './employment-container.html',
   styleUrl: './employment-container.scss',
 })

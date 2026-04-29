@@ -5,6 +5,7 @@
             <mat-panel-description>
                 <p>{{employmentHistory.startDate}} – {{employmentHistory.endDate}}</p>
                 <mat-icon>work</mat-icon>
+                <app-icon-widget [technologies]="employmentHistory.technologies"></app-icon-widget>
             </mat-panel-description>
         </mat-expansion-panel-header>
 
