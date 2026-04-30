@@ -38,7 +38,8 @@
         </mat-card>
 
         @for (employmentHistory of employmentHistories(); track $index) {
-        <app-employment-container [employmentHistory]="employmentHistory"></app-employment-container>
+        <app-employment-container [employmentHistory]="employmentHistory"
+            [expanded]="$index < 3"></app-employment-container>
         }
     </div>
 </div>

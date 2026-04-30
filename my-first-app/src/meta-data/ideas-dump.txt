@@ -12,6 +12,10 @@ I like the idea of the animated SVG avatar but this doesnt gel well with the man
 
 Cool ideas hmmm 
 1) single page scroller with anchor tags to sections like this https://braydenfriesen.com/
+2) I like the two state navigation - Hyperlinks for the SPA scroller which is mostly related to me and my work expreince 
+3) seperate routes nested below for standalone pages like quots and the body schematics later
+4) Website has to have miltestones! Like markers and markers are also release ready prototypes 
+
 
 3JS full course 
 https://threejs-journey.com/#

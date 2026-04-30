@@ -16,5 +16,6 @@ import { IconWidget } from '../icon-widget/icon-widget';
   styleUrl: './employment-container.scss',
 })
 export class EmploymentContainer {
-  @Input() employmentHistory: EmploymentHistory = {} as EmploymentHistory; // Required  
+  @Input() employmentHistory: EmploymentHistory = {} as EmploymentHistory;
+  @Input() expanded: boolean = false;
 }

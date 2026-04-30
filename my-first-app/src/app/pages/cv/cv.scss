@@ -15,7 +15,12 @@
     mat-expansion-panel-header {
         pointer-events: none;
 
+        ::ng-deep.mat-expansion-indicator {
+            display: none;
+        }
+
     }
+
 }
 
 mat-card {

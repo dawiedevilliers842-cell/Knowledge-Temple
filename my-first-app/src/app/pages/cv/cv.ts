@@ -36,10 +36,14 @@ export class Cv {
   chartOptions: Highcharts.Options = {
 
     chart: {
-      type: 'bar'
+      type: 'bar',
+      backgroundColor: '#121316'
     },
     title: {
-      text: 'Skills Matrix'
+      text: 'Skills Matrix',
+      style: {
+        color: '#ffffff'
+      }
     },
     xAxis: {
       categories: [
@@ -63,27 +67,46 @@ export class Cv {
         text: null
       },
       gridLineWidth: 1,
-      lineWidth: 0
+      lineWidth: 0,
+      gridLineColor: '#2b2b2b',
+      labels: {
+        style: {
+          color: '#ffffff'
+        }
+      }
     },
     yAxis: {
       min: 0,
       title: {
         text: 'Years of experience',
-        align: 'high'
+        align: 'high',
+        style: {
+          color: '#ffffff'
+        }
       },
       labels: {
-        overflow: 'justify'
+        overflow: 'justify',
+        style: {
+          color: '#ffffff'
+        }
       },
-      gridLineWidth: 0
+      gridLineWidth: 1,
+      gridLineColor: '#2b2b2b'
     },
     tooltip: {
-      valueSuffix: ' millions'
+      valueSuffix: ' years',
+      backgroundColor: '#121212',
+      style: {
+        color: '#ffffff'
+      }
     },
     plotOptions: {
       bar: {
         borderRadius: '50%',
+        color: '#3f51b5',
         dataLabels: {
-          enabled: true
+          enabled: true,
+          color: '#ffffff'
         },
         groupPadding: 0.1
       }
