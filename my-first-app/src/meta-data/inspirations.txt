@@ -6,7 +6,10 @@ https://paulstamatiou.com/\
 https://www.fromjason.xyz/
     - Like the oldschool sketch art (but doing mandala now)
 
-    https://braydenfriesen.com/
-    - Like the single page scroller thing
-    - The technologies used section is nice and Clean
+https://braydenfriesen.com/
+- Like the single page scroller thing
+- The technologies used section is nice and Clean
+
+https://oakharborwebdesigns.com/
+- Implemented the tiles sort of but overall nice clean website 
     

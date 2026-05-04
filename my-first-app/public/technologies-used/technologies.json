@@ -84,5 +84,31 @@
         "url": "https://developer.android.com/",
         "color": "#3ddc84",
         "image": "library-icons/android.svg"
+    },
+    {
+        "id": "7",
+        "type": "project-management",
+        "categories": [
+            "project-Management"
+        ],
+        "name": "Azure DevOps",
+        "description": "Azure DevOps is a comprehensive Microsoft SaaS platform that provides developer services to support teams in planning, coding, building, testing, and deploying software. It enables DevOps practices by integrating tools for agile planning, version control, CI/CD, and application testing into a single, cohesive environment.",
+        "icon": "azure.svg",
+        "url": "https://azure.microsoft.com/en-us/products/devops/",
+        "color": "#0089d6",
+        "image": "library-icons/azure.svg"
+    },
+    {
+        "id": "8",
+        "type": "project-management",
+        "categories": [
+            "project-Management"
+        ],
+        "name": "Jira",
+        "description": "Jira is a project management tool developed by Atlassian that helps teams plan, track, and release software projects. It provides a centralized platform for managing tasks, issues, and versions, with features for agile planning, version control, CI/CD, and application testing.",
+        "icon": "jira.svg",
+        "url": "https://www.atlassian.com/software/jira",
+        "color": "#0052cc",
+        "image": "library-icons/jira.svg"
     }
 ]
