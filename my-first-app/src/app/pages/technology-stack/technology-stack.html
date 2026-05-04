@@ -3,41 +3,8 @@
     <mat-card-title>Technology Stack</mat-card-title>
   </mat-card-header>
   <mat-card-content class="stack-grid">
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>Frontend</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-chip-set aria-label="Frontend tech">
-          <mat-chip>Angular</mat-chip>
-          <mat-chip>TypeScript</mat-chip>
-          <mat-chip>SCSS</mat-chip>
-        </mat-chip-set>
-      </mat-card-content>
-    </mat-card>
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>Tooling</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-chip-set aria-label="Tooling tech">
-          <mat-chip>Angular CLI</mat-chip>
-          <mat-chip>Git</mat-chip>
-          <mat-chip>npm</mat-chip>
-        </mat-chip-set>
-      </mat-card-content>
-    </mat-card>
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>Design</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-chip-set aria-label="Design focus">
-          <mat-chip>Figma</mat-chip>
-          <mat-chip>Motion-first</mat-chip>
-          <mat-chip>Responsive UI</mat-chip>
-        </mat-chip-set>
-      </mat-card-content>
-    </mat-card>
+    @for (technologyItem of technologyItems(); track $index) {
+    <app-tech-tile [technologyItem]="technologyItem"></app-tech-tile>
+    }
   </mat-card-content>
 </mat-card>

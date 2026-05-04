@@ -1,0 +1,58 @@
+.tech-tile-container {
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+}
+
+mat-card {
+    padding: 1rem;
+    background-color: #000000b5;
+
+    h3 {
+        margin: 0;
+    }
+
+    z-index: 1;
+}
+
+.image-container {
+    padding: 1rem;
+}
+
+
+.tech-tile-image {
+    transition: all 0.3s ease-in-out;
+    width: 40px
+}
+
+.background-shadow-image {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    margin: auto;
+    width: 60%;
+    height: 60%;
+    opacity: 1;
+    z-index: 0;
+    opacity: 0.1;
+    transition: all 0.3s ease-in-out;
+
+}
+
+.tech-tile-container:hover {
+
+    // border: 1px solid #f30c4f;
+    border-color: var(--hover-color, blue);
+
+    .tech-tile-image {
+        transform: scale(1.1);
+    }
+
+    .background-shadow-image {
+        opacity: 0.9;
+        transform: scale(1.1);
+    }
+}

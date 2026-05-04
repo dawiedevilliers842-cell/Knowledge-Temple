@@ -1,0 +1,19 @@
+<div class="tech-tile-container" [style.--hover-color]="technologyItem.color">
+    <mat-card appearance="outlined">
+
+        <div class="title-container">
+            <div class="image-container">
+                <img class="tech-tile-image" src="{{technologyItem.image}}" alt="Angular">
+            </div>
+
+        </div>
+        <mat-card-content>
+            <h3>{{technologyItem.name}}</h3>
+            <p>{{technologyItem.description}}</p>
+
+            <a href="{{technologyItem.url}}" target="_blank" rel="noopener">Learn more...</a>
+        </mat-card-content>
+
+    </mat-card>
+    <img class="background-shadow-image" src="{{technologyItem.image}}" alt="Angular">
+</div>
