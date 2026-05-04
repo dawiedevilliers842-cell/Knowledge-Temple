@@ -4,20 +4,21 @@
     background-color: #ff000000;
 }
 
-#OuterCircle{
-    transform-origin: center; 
-    // animation: rotateCounterClockwise 800s linear infinite;
+#OuterCircle {
+    transform-origin: center;
+    animation: rotateCounterClockwise 300s linear infinite;
 }
 
-#InnerCircle{
-    transform-origin: center; 
-    // animation: rotate 60s linear infinite;
+#InnerCircle {
+    transform-origin: center;
+    animation: rotate 300s linear infinite;
 }
 
 @keyframes rotate {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -27,7 +28,8 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
-        transform: rotate(360deg);
+        transform: rotate(-360deg);
     }
 }
