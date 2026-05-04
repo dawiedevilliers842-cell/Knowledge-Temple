@@ -24,7 +24,7 @@
             "library"
         ],
         "name": "React",
-        "description": "React is a JavaScript library for building user interfaces.",
+        "description": "React (also known as React.js or ReactJS) is an open-source JavaScript library used for building user interfaces (UIs), primarily for web applications. Developed and maintained by Meta (formerly Facebook), it focuses on creating interactive and dynamic UIs through a modular, component-based approach.",
         "icon": "react.svg",
         "url": "https://reactjs.org/",
         "color": "#61dbfc",
@@ -58,5 +58,31 @@
         "url": "https://git-scm.com/",
         "color": "#f03c2d",
         "image": "library-icons/git.svg"
+    },
+    {
+        "id": "5",
+        "type": "query-language",
+        "categories": [
+            "query-language"
+        ],
+        "name": "GraphqQL",
+        "description": "GraphQL is an open-source query language for APIs and a runtime for fulfilling those queries with your existing data. Originally developed by Facebook in 2012 and open-sourced in 2015, it provides a more flexible and efficient alternative to traditional REST APIs.",
+        "icon": "graphql.svg",
+        "url": "https://graphql.org/",
+        "color": "#e10098",
+        "image": "library-icons/graphql.svg"
+    },
+    {
+        "id": "6",
+        "type": "mobile-framework",
+        "categories": [
+            "mobile-framework"
+        ],
+        "name": "Android",
+        "description": "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. Originally developed by Android Inc., acquired by Google in 2005, it was unveiled in 2007, with the first commercial Android device launched in September 2008.",
+        "icon": "android.svg",
+        "url": "https://developer.android.com/",
+        "color": "#3ddc84",
+        "image": "library-icons/android.svg"
     }
 ]

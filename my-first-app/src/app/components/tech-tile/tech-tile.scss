@@ -16,8 +16,15 @@ mat-card {
     z-index: 1;
 }
 
+.title-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
 .image-container {
-    padding: 1rem;
+    padding: 0.7rem;
 }
 
 
