@@ -31,6 +31,9 @@
             ],
             "styles": [
               "src/styles.scss"
+            ],
+            "scripts": [
+              "node_modules/parallax-js/dist/parallax.min.js"
             ]
           },
           "configurations": {
