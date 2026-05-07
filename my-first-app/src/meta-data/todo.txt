@@ -8,3 +8,22 @@ You should do this on this day
 
 29 April
 1) Add rough about me section - ship ready
+
+6 Mei
+1) Tweaked about me section, removed content added parallax
+2) added tech widgets 
+3) refine design add svgs for toggling between extreme sports 
+
+Future
+
+7 Mei
+1) Make widgets clickable - Not done
+2) ensure responsiveness - Working
+3) ensure correct region - Working
+4) add the svg icons to switch picture
+
+8 Mei
+1) Make widgets clickable - Not done
+2) ensure responsiveness - Working
+3) ensure correct region - Working
+Ship to GHP
