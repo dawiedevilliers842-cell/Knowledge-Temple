@@ -1,0 +1,114 @@
+[
+    {
+        "id": "1",
+        "type": "frontend",
+        "name": "Angular",
+        "categories": [
+            "javascript",
+            "typescript",
+            "library",
+            "framework"
+        ],
+        "description": "Angular is a popular, TypeScript-based, open-source front-end framework developed by Google for building dynamic, scalable, and modern single-page web applications (SPAs). It uses a component-based architecture to enhance modularity and code reusability, allowing developers to create complex applications with a comprehensive, well-integrated set of tools.",
+        "icon": "angular.svg",
+        "url": "https://angular.dev/",
+        "color": "#f30c4f",
+        "image": "library-icons/angular.svg"
+    },
+    {
+        "id": "2",
+        "type": "frontend",
+        "categories": [
+            "javascript",
+            "typescript",
+            "library"
+        ],
+        "name": "React",
+        "description": "React (also known as React.js or ReactJS) is an open-source JavaScript library used for building user interfaces (UIs), primarily for web applications. Developed and maintained by Meta (formerly Facebook), it focuses on creating interactive and dynamic UIs through a modular, component-based approach.",
+        "icon": "react.svg",
+        "url": "https://reactjs.org/",
+        "color": "#61dbfc",
+        "image": "library-icons/react.svg"
+    },
+    {
+        "id": "3",
+        "type": "frontend",
+        "categories": [
+            "javascript",
+            "typescript",
+            "library",
+            "framework"
+        ],
+        "name": "Vue",
+        "description": "Vue.js is a progressive, open-source JavaScript framework for building modern, interactive user interfaces (UIs) and Single-Page Applications (SPAs). It acts as the 'view' layer of applications, specializing in declarative rendering, component-based architecture, and reactive data binding to synchronize UI with data efficiently.",
+        "icon": "vue.svg",
+        "url": "https://vuejs.org/",
+        "color": "#41b883",
+        "image": "library-icons/vue.svg"
+    },
+    {
+        "id": "4",
+        "type": "source-control",
+        "categories": [
+            "source-control"
+        ],
+        "name": "Git",
+        "description": "Git is a free, open-source distributed version control system used primarily by developers to track and manage changes to source code over time. It acts like a 'time machine' for projects, allowing you to save snapshots of your work so you can revert to earlier versions if something breaks.",
+        "icon": "git.svg",
+        "url": "https://git-scm.com/",
+        "color": "#f03c2d",
+        "image": "library-icons/git.svg"
+    },
+    {
+        "id": "5",
+        "type": "query-language",
+        "categories": [
+            "query-language"
+        ],
+        "name": "GraphqQL",
+        "description": "GraphQL is an open-source query language for APIs and a runtime for fulfilling those queries with your existing data. Originally developed by Facebook in 2012 and open-sourced in 2015, it provides a more flexible and efficient alternative to traditional REST APIs.",
+        "icon": "graphql.svg",
+        "url": "https://graphql.org/",
+        "color": "#e10098",
+        "image": "library-icons/graphql.svg"
+    },
+    {
+        "id": "6",
+        "type": "mobile-framework",
+        "categories": [
+            "mobile-framework"
+        ],
+        "name": "Android",
+        "description": "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. Originally developed by Android Inc., acquired by Google in 2005, it was unveiled in 2007, with the first commercial Android device launched in September 2008.",
+        "icon": "android.svg",
+        "url": "https://developer.android.com/",
+        "color": "#3ddc84",
+        "image": "library-icons/android.svg"
+    },
+    {
+        "id": "7",
+        "type": "project-management",
+        "categories": [
+            "project-Management"
+        ],
+        "name": "Azure DevOps",
+        "description": "Azure DevOps is a comprehensive Microsoft SaaS platform that provides developer services to support teams in planning, coding, building, testing, and deploying software. It enables DevOps practices by integrating tools for agile planning, version control, CI/CD, and application testing into a single, cohesive environment.",
+        "icon": "azure.svg",
+        "url": "https://azure.microsoft.com/en-us/products/devops/",
+        "color": "#0089d6",
+        "image": "library-icons/azure.svg"
+    },
+    {
+        "id": "8",
+        "type": "project-management",
+        "categories": [
+            "project-Management"
+        ],
+        "name": "Jira",
+        "description": "Jira is a project management tool developed by Atlassian that helps teams plan, track, and release software projects. It provides a centralized platform for managing tasks, issues, and versions, with features for agile planning, version control, CI/CD, and application testing.",
+        "icon": "jira.svg",
+        "url": "https://www.atlassian.com/software/jira",
+        "color": "#0052cc",
+        "image": "library-icons/jira.svg"
+    }
+]
