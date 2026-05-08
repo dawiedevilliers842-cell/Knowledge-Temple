@@ -14,7 +14,10 @@ import { AboutItem } from '../../models/about-item';
 export class AboutMe implements OnDestroy {
   @ViewChild('scene') sceneElement!: ElementRef;
   @ViewChild('image') imageElement!: ElementRef;
-  @ViewChild('aboutMe') aboutMeElement!: ElementRef;
+  // @ViewChild('aboutMe') aboutMeElement!: ElementRef;
+  @ViewChild('aboutMeCard', { read: ElementRef }) aboutMeCard!: ElementRef;
+
+
   private parallaxInstance?: any;
   private isParallaxInitialized = false;
 
@@ -52,30 +55,19 @@ export class AboutMe implements OnDestroy {
   }
 
   randomizePositions() {
-    // const rect = this.sceneElement.nativeElement.getBoundingClientRect();
     const rect = this.imageElement.nativeElement.getBoundingClientRect();
-    const excludedRect = this.aboutMeElement.nativeElement.getBoundingClientRect();
+    const excludedRect = this.aboutMeCard.nativeElement.getBoundingClientRect();
 
-
-    // const containerWidth = rect.width - (0.1 * rect.width);
     const containerWidth = rect.width - (0.1 * rect.width); // Define your container width
-
     const containerHeight = rect.height; // Define your container height
-    const itemSize = 20; // Estimated size of your item
+    const itemSize = 30; // Estimated size of your item
 
     this.technologies.update(items => items.map(item => ({
       ...item,
-      // top: Math.random() * (containerHeight - itemSize) + 114,
-      // left: Math.random() * (containerWidth - itemSize),
-      coordinates: this.generateSafeCoordinates(containerWidth, containerHeight, itemSize, itemSize, excludedRect),
+      coordinates: this.generateSafeCoordinates(containerWidth, containerHeight, itemSize, itemSize, { x: 0, y: 0, width: excludedRect.width, height: excludedRect.height }),
       depth: "0." + (Math.floor(Math.random() * 10) + 1
       ).toString()
     })));
-
-    console.log('excludedRect', excludedRect);
-
-    console.log('containerHeight', containerHeight);
-    console.log('visibleHeight', this.getVisibleRectHeight(this.imageElement.nativeElement));
 
     console.log('rect', rect);
     for (const item of this.technologies()) {
@@ -108,7 +100,6 @@ export class AboutMe implements OnDestroy {
     let x = 0;
     let y = 0;
     let hasOverlap = true;
-    console.log('excludedRect', excludedRect);
 
     // Rejection Sampling: Keep trying until a valid spot is found
     while (hasOverlap) {

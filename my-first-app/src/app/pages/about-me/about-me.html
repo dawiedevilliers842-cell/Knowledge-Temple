@@ -3,7 +3,7 @@
   </div>
 
   <div #aboutMe class="content-layer" data-depth="0.0">
-    <mat-card class="page-card">
+    <mat-card #aboutMeCard class="page-card">
       <mat-card-header>
         <mat-card-title>About Me</mat-card-title>
       </mat-card-header>
@@ -26,10 +26,10 @@
 
   @for (technology of technologies(); track technology.name) {
   <div [attr.data-depth]="technology.depth">
-    <div class="icon-widget-container" [style.top.px]="technology.coordinates.top"
-      [style.left.px]="technology.coordinates.left">
+    <a [href]="technology.url" target="_blank" class="icon-widget-container" rel="noopener noreferrer"
+      [style.top.px]="technology.coordinates.top" [style.left.px]="technology.coordinates.left">
       <img class="tech-icon" [src]="technology.image" [alt]="technology.name">
-    </div>
+    </a>
   </div>
 
   }
