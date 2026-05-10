@@ -1,44 +1,43 @@
-<mat-card class="page-card">
-  <mat-card-header>
-    <mat-card-title>About Me</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p>
-      My name is Dawie de Villiers
-      I am a full-time adrenaline junky who likes to code, make music and build Legos
-      I have been in the software space for about 12 years (sheeeesh)
-      In that time I have used ALLOT of random things but my strong suite is Web, Angular and Creating fluent,
-      responsive, powerful user interfaces
+<div #scene id="scene" class="about-me-container">
+  <div data-depth="0.1">
+  </div>
 
-    </p>
-    <h2>Technologies I have worked with</h2>
-    <div class="technologies-container">
-      <mat-list role="list">
-        <mat-list-item role="listitem">Android </mat-list-item>
-        <mat-list-item role="listitem">Windows Phone - RIP Microsoft 🤣 </mat-list-item>
-        <mat-list-item role="listitem">ASP.Net MVC 5</mat-list-item>
-        <mat-list-item role="listitem">Angular JS </mat-list-item>
-        <mat-list-item role="listitem">Angular 2 </mat-list-item>
-        <mat-list-item role="listitem">React</mat-list-item>
-        <mat-list-item role="listitem">Blazor </mat-list-item>
-        <mat-list-item role="listitem">Cordova </mat-list-item>
-        <mat-list-item role="listitem">Nativescript </mat-list-item>
-        <mat-list-item role="listitem">Vue (A little bit)</mat-list-item>
-        <mat-list-item role="listitem">Flutter (A little bit)</mat-list-item>
-        <mat-list-item role="listitem">Svelte (Hello world 😉)</mat-list-item>
-      </mat-list>
-      <div class="image-container">
-        <img src="images/climb_18.JPG" alt="climb">
-      </div>
-
-    </div>
-
-    <p>
-      But I am a Angular Senior at heart Angular (v4 – v21)
-      If you want to get in touch please drop me a mail at
-      Dawiedevilliers1@gmail.com
-    </p>
+  <div #aboutMe class="content-layer" data-depth="0.0">
+    <mat-card #aboutMeCard class="page-card">
+      <mat-card-header>
+        <mat-card-title>About Me</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          My name is Dawie de Villiers
+          I am a full-time adrenaline junky who likes to code, make music and build Legos
+        </p>
+      </mat-card-content>
+    </mat-card>
+    <div class="white-space"></div>
+  </div>
 
 
-  </mat-card-content>
-</mat-card>
+
+  <div #image class="image-layer" data-depth="0.3">
+    <img src="images/climb_18.JPG" alt="climb">
+  </div>
+
+
+  @for (technology of technologies(); track technology.name) {
+  <div [attr.data-depth]="technology.depth">
+    <a [href]="technology.url" target="_blank" class="icon-widget-container" rel="noopener noreferrer"
+      [style.top.px]="technology.coordinates.top" [style.left.px]="technology.coordinates.left">
+      <img class="tech-icon" [src]="technology.image" [alt]="technology.name">
+    </a>
+  </div>
+
+  }
+
+
+
+
+  <!-- <div data-depth="0.1" class="image-container">
+    <img src="images/climb_18.JPG" alt="climb">
+  </div> -->
+</div>
