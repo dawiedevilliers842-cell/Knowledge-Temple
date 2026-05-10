@@ -1,0 +1,74 @@
+[
+  {
+    "id": "quote_011",
+    "slug": "and-sometimes-even-our-life-s-biggest-problems-are-just-our-prayers-bein",
+    "quote": "and sometimes even our life's biggest problems are just our prayers being answered",
+    "author": "Viktor Oddo",
+    "tags": [
+      "existentialism"
+    ],
+    "word_count": 13,
+    "char_count": 82,
+    "length": "medium"
+  },
+  {
+    "id": "quote_115",
+    "slug": "life-can-only-be-understood-backwards-but-it-must-be-lived-forwards",
+    "quote": "Life can only be understood backwards, but it must be lived forwards",
+    "author": "Soren Kierkegaard",
+    "tags": [
+      "existentialism"
+    ],
+    "word_count": 12,
+    "char_count": 68,
+    "length": "medium"
+  },
+  {
+    "id": "quote_118",
+    "slug": "life-is-not-made-unbearable-by-circumstances-but-by-a-lack-of-meaning-an",
+    "quote": "Life is not made unbearable by circumstances but by a lack of meaning and purpose. -Victor E. Frankl.",
+    "author": "Unknown",
+    "tags": [
+      "existentialism"
+    ],
+    "word_count": 18,
+    "char_count": 101,
+    "length": "medium"
+  },
+  {
+    "id": "quote_256",
+    "slug": "what-is-to-give-light-must-endure-burning",
+    "quote": "What is to give light must endure burning",
+    "author": "Viktor Frankl",
+    "tags": [
+      "existentialism"
+    ],
+    "word_count": 8,
+    "char_count": 41,
+    "length": "short"
+  },
+  {
+    "id": "quote_262",
+    "slug": "when-a-man-can-t-find-a-deep-sense-of-meaning-they-distract-themselves-w",
+    "quote": "When a man can't find a deep sense Of meaning, they distract themselves with *pleasure*",
+    "author": "Victor E Frankl",
+    "tags": [
+      "existentialism"
+    ],
+    "word_count": 15,
+    "char_count": 87,
+    "length": "medium"
+  },
+  {
+    "id": "quote_280",
+    "slug": "you-are-the-sum-of-your-choices",
+    "quote": "You are the sum of your choices",
+    "author": "Albert Camus",
+    "tags": [
+      "existentialism"
+    ],
+    "word_count": 7,
+    "char_count": 31,
+    "length": "short"
+  }
+]

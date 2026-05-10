@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "sources": [
+    "categories/general.json",
+    "categories/stoicism.json",
+    "categories/existentialism.json",
+    "categories/buddhism.json",
+    "categories/taoism.json"
+  ]
+}

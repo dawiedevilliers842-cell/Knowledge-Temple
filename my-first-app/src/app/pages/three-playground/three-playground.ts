@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 interface QuoteRecord {
   id: string;
@@ -11,6 +12,42 @@ interface QuoteRecord {
   char_count: number;
   length: string;
 }
+
+/** Lists quote bundle files relative to `/quotes/`. Edit to add/remove category files. */
+interface QuotesManifest {
+  version?: number;
+  sources: string[];
+}
+
+/** Canonical cluster ids matching `quotes/categories/*.json` tag names; anything else ⇒ general hub. */
+type QuoteClusterId = 'general' | 'stoicism' | 'taoism' | 'buddhism' | 'existentialism';
+
+const QUOTE_CLUSTER_ORDER: readonly QuoteClusterId[] = [
+  'general',
+  'stoicism',
+  'taoism',
+  'buddhism',
+  'existentialism',
+];
+
+const CLUSTER_HUB_COLOR: Record<QuoteClusterId, string> = {
+  general: '#4f6cae',
+  stoicism: '#5fa8dc',
+  taoism: '#5eb89a',
+  buddhism: '#c8935f',
+  existentialism: '#9b72cf',
+};
+
+/** Corner satellites (general stays at origin). Order maps to far “corners” of the volume. */
+const CLUSTER_CORNER: Record<
+  Exclude<QuoteClusterId, 'general'>,
+  readonly [number, number, number]
+> = {
+  stoicism: [1, 1, 1],
+  taoism: [-1, -0.85, 1],
+  buddhism: [1, -0.9, -1],
+  existentialism: [-1, 1, -1],
+};
 
 @Component({
   selector: 'app-three-playground',
@@ -27,7 +64,7 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   private renderer?: THREE.WebGLRenderer;
   private scene?: THREE.Scene;
   private camera?: THREE.PerspectiveCamera;
-  private centerSphere?: THREE.Mesh;
+  private controls?: OrbitControls;
   private starMaterial?: THREE.PointsMaterial;
   private orbitPivots: THREE.Object3D[] = [];
   private orbitBodies: THREE.Mesh[] = [];
@@ -41,6 +78,13 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   private readonly disposables: Array<THREE.BufferGeometry | THREE.Material> = [];
   private readonly clock = new THREE.Clock();
   private frameId?: number;
+  /** WASD / arrow movement; values: forward, back, left, right */
+  private readonly keysPressed = new Set<'forward' | 'back' | 'left' | 'right'>();
+  private readonly moveScratch = {
+    forward: new THREE.Vector3(),
+    right: new THREE.Vector3(),
+    delta: new THREE.Vector3(),
+  };
 
   constructor(private readonly ngZone: NgZone) { }
 
@@ -52,36 +96,42 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color('#0b1020');
 
-    this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    this.camera.position.set(0, 0, 4);
+    this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 2000);
+    /** Initial placeholder; `frameClustersInView()` sets the real pose after quotes load. */
+    this.camera.position.set(0, 1.2, 14);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(width, height);
     host.appendChild(this.renderer.domElement);
 
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.target.set(0, 0, 0);
+    this.controls.enableRotate = false;
+    this.controls.enablePan = true;
+    // Default LEFT = rotate (disabled above); bind left drag to pan so click-drag traverses the scene.
+    this.controls.mouseButtons = {
+      LEFT: THREE.MOUSE.PAN,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT: THREE.MOUSE.PAN,
+    };
+    this.controls.minDistance = 1.25;
+    this.controls.maxDistance = 120;
+    this.controls.update();
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     const directionalLight = new THREE.DirectionalLight(0x9ec8ff, 1.3);
     directionalLight.position.set(2, 3, 4);
     this.scene.add(ambientLight, directionalLight);
 
-    const centerGeometry = new THREE.SphereGeometry(0.65, 48, 48);
-    const centerMaterial = new THREE.MeshStandardMaterial({
-      color: '#58a6ff',
-      emissive: '#12364e',
-      metalness: 0.28,
-      roughness: 0.42,
-    });
-    this.disposables.push(centerGeometry, centerMaterial);
-    this.centerSphere = new THREE.Mesh(centerGeometry, centerMaterial);
-    this.scene.add(this.centerSphere);
-
     this.createStarscape();
-    this.createOrbitSystem();
+    // this.createOrbitSystem();
     // this.createAmbientSpheres();
     this.loadQuotesAndCreateSpheres();
 
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
     const canvas = this.renderer.domElement;
     this.ngZone.runOutsideAngular(() => {
       canvas.addEventListener('pointermove', this.onPointerMove);
@@ -92,8 +142,11 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keyup', this.onKeyUp);
     this.renderer?.domElement.removeEventListener('pointermove', this.onPointerMove);
     this.renderer?.domElement.removeEventListener('pointerleave', this.onPointerLeave);
+    this.controls?.dispose();
     if (this.frameId) {
       cancelAnimationFrame(this.frameId);
     }
@@ -118,6 +171,98 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
   };
+
+  private readonly onKeyDown = (event: KeyboardEvent): void => {
+    switch (event.code) {
+      case 'KeyW':
+      case 'ArrowUp':
+        this.keysPressed.add('forward');
+        event.preventDefault();
+        break;
+      case 'KeyS':
+      case 'ArrowDown':
+        this.keysPressed.add('back');
+        event.preventDefault();
+        break;
+      case 'KeyA':
+      case 'ArrowLeft':
+        this.keysPressed.add('left');
+        event.preventDefault();
+        break;
+      case 'KeyD':
+      case 'ArrowRight':
+        this.keysPressed.add('right');
+        event.preventDefault();
+        break;
+      default:
+        break;
+    }
+  };
+
+  private readonly onKeyUp = (event: KeyboardEvent): void => {
+    switch (event.code) {
+      case 'KeyW':
+      case 'ArrowUp':
+        this.keysPressed.delete('forward');
+        break;
+      case 'KeyS':
+      case 'ArrowDown':
+        this.keysPressed.delete('back');
+        break;
+      case 'KeyA':
+      case 'ArrowLeft':
+        this.keysPressed.delete('left');
+        break;
+      case 'KeyD':
+      case 'ArrowRight':
+        this.keysPressed.delete('right');
+        break;
+      default:
+        break;
+    }
+  };
+
+  /** Slide camera and look-at target on the XZ plane (wheel zoom still changes distance). */
+  private applyKeyboardMovement(delta: number): void {
+    if (!this.camera || !this.controls || this.keysPressed.size === 0) {
+      return;
+    }
+
+    const moveSpeed = 3.2;
+    const { forward, right, delta: moveDelta } = this.moveScratch;
+
+    forward.subVectors(this.controls.target, this.camera.position);
+    forward.y = 0;
+    if (forward.lengthSq() < 1e-8) {
+      forward.set(0, 0, -1);
+    } else {
+      forward.normalize();
+    }
+
+    right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+
+    moveDelta.set(0, 0, 0);
+    if (this.keysPressed.has('forward')) {
+      moveDelta.add(forward);
+    }
+    if (this.keysPressed.has('back')) {
+      moveDelta.sub(forward);
+    }
+    if (this.keysPressed.has('right')) {
+      moveDelta.add(right);
+    }
+    if (this.keysPressed.has('left')) {
+      moveDelta.sub(right);
+    }
+
+    if (moveDelta.lengthSq() === 0) {
+      return;
+    }
+
+    moveDelta.normalize().multiplyScalar(moveSpeed * delta);
+    this.camera.position.add(moveDelta);
+    this.controls.target.add(moveDelta);
+  }
 
   private readonly onPointerMove = (event: PointerEvent): void => {
     if (!this.renderer || !this.camera || !this.quoteGroup) {
@@ -179,7 +324,7 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   }
 
   private animate(): void {
-    if (!this.renderer || !this.scene || !this.camera || !this.centerSphere) {
+    if (!this.renderer || !this.scene || !this.camera) {
       return;
     }
 
@@ -210,8 +355,10 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
       }
     }
 
+    this.applyKeyboardMovement(delta);
     this.updateQuoteTooltipPosition();
 
+    this.controls?.update();
     this.renderer.render(this.scene, this.camera);
     this.frameId = requestAnimationFrame(() => this.animate());
   }
@@ -308,22 +455,121 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   }
 
   private loadQuotesAndCreateSpheres(): void {
-    void fetch('/quotes/quotes.json')
+    const quotesBase = '/quotes/';
+
+    void fetch(`${quotesBase}manifest.json`)
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`Failed to load quotes (${response.status})`);
+          throw new Error(`Failed to load quote manifest (${response.status})`);
         }
-        return response.json() as Promise<QuoteRecord[]>;
+        return response.json() as Promise<QuotesManifest>;
       })
-      .then((quotes) => {
+      .then((manifest) =>
+        Promise.all(
+          manifest.sources.map((relativePath) => {
+            const url = `${quotesBase}${relativePath.replace(/^\/+/, '')}`;
+            return fetch(url).then((r) => {
+              if (!r.ok) {
+                throw new Error(`Failed to load quote bundle (${r.status}): ${url}`);
+              }
+              return r.json() as Promise<QuoteRecord[]>;
+            });
+          }),
+        ),
+      )
+      .then((bundles) => {
         if (!this.scene) {
           return;
         }
+
+        const quotes = bundles.flat();
+        quotes.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+
+        const seenIds = new Set<string>();
+        for (const q of quotes) {
+          if (seenIds.has(q.id)) {
+            console.warn(`Duplicate quote id in merged bundles: ${q.id}`);
+          }
+          seenIds.add(q.id);
+        }
+
         this.createQuoteSpheres(quotes);
       })
       .catch((error: unknown) => {
         console.error(error);
       });
+  }
+
+  /** Map record tags (first tag) to a cluster hub; empties ⇒ general bucket. */
+  private quoteClusterId(q: QuoteRecord): QuoteClusterId {
+    const t = q.tags?.[0];
+    if (
+      typeof t === 'string' &&
+      (QUOTE_CLUSTER_ORDER as readonly string[]).includes(t as QuoteClusterId)
+    ) {
+      return t as QuoteClusterId;
+    }
+    return 'general';
+  }
+
+  /**
+   * Hub size scales gently with quote count. General uses a **low hard cap** so it never
+   * overwhelms the corner constellations; satellites keep a slightly higher relative cap.
+   */
+  private clusterHubRadius(catId: QuoteClusterId, n: number): number {
+    const count = Math.max(n, 1);
+    if (catId === 'general') {
+      const base = 0.25;
+      const cap = 0.72;
+      const blend =
+        0.5 * (Math.sqrt(count / 88) * 0.38) + 0.5 * (Math.log1p(count) * 0.095);
+      return THREE.MathUtils.clamp(base + blend, base, cap);
+    }
+    const ref = 34;
+    const base = 0.2;
+    const cap = 0.95;
+    const grow = (Math.sqrt(count) / Math.sqrt(ref)) * 0.4;
+    return THREE.MathUtils.clamp(base + grow, base, cap);
+  }
+
+  /** Fit every cluster (and its orbits) in the opening shot. */
+  private frameClustersInView(): void {
+    if (!this.camera || !this.controls || !this.renderer || !this.quoteGroup) {
+      return;
+    }
+    if (this.quoteGroup.children.length === 0) {
+      return;
+    }
+
+    this.quoteGroup.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(this.quoteGroup);
+    const size = box.getSize(new THREE.Vector3());
+    if (!Number.isFinite(size.x) || size.x < 1e-6) {
+      return;
+    }
+
+    const sphere = box.getBoundingSphere(new THREE.Sphere());
+    const center = sphere.center;
+    const radius = Math.max(sphere.radius, 0.6);
+
+    const vFov = THREE.MathUtils.degToRad(this.camera.fov);
+    const distV = radius / Math.tan(vFov / 2);
+    const hFov = 2 * Math.atan(Math.tan(vFov / 2) * this.camera.aspect);
+    const distH = radius / Math.tan(hFov / 2);
+    let distance = Math.max(distV, distH) * 1.16;
+
+    distance = THREE.MathUtils.clamp(distance, 6, 95);
+
+    const dir = new THREE.Vector3(0.22, 0.16, 1).normalize();
+    this.camera.position.copy(center.clone().add(dir.multiplyScalar(distance)));
+
+    this.camera.near = Math.max(0.06, distance * 0.0015);
+    this.camera.far = Math.max(distance * 40, 800);
+    this.camera.updateProjectionMatrix();
+
+    this.controls.target.copy(center);
+    this.controls.maxDistance = Math.max(96, distance * 2.4);
+    this.controls.update();
   }
 
   private createQuoteSpheres(quotes: QuoteRecord[]): void {
@@ -333,50 +579,124 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
 
     this.quoteOrbitPivots.length = 0;
 
-    const group = new THREE.Group();
-    this.quoteGroup = group;
-    this.scene.add(group);
+    const root = new THREE.Group();
+    this.quoteGroup = root;
+    this.scene.add(root);
 
-    const orbitRadius = 1.48;
-    const n = quotes.length;
-
-    const charMin = Math.min(...quotes.map((q) => q.char_count));
-    const charMax = Math.max(...quotes.map((q) => q.char_count));
-    const charSpan = Math.max(1, charMax - charMin);
-    const radiusMin = 0.042;
-    const radiusMax = 0.13;
-
-    for (let i = 0; i < n; i += 1) {
-      const quote = quotes[i];
-      const t = charSpan > 0 ? (quote.char_count - charMin) / charSpan : 0.5;
-      const baseRadius = radiusMin + t * (radiusMax - radiusMin);
-      const geometry = new THREE.SphereGeometry(baseRadius, 28, 28);
-      const hue = this.stringToHue(quote.id);
-      const color = new THREE.Color().setHSL(hue, 0.62, 0.58);
-      const material = new THREE.MeshStandardMaterial({
-        color,
-        emissive: color.clone().multiplyScalar(0.35),
-        emissiveIntensity: 0.45,
-        metalness: 0.22,
-        roughness: 0.48,
-      });
-
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(orbitRadius, 0, 0);
-      mesh.userData['quoteId'] = quote.id;
-      mesh.userData['slug'] = quote.slug;
-      mesh.userData['quote'] = quote.quote;
-      mesh.userData['author'] = quote.author;
-
-      const pivot = new THREE.Object3D();
-      pivot.rotation.y = (i / n) * Math.PI * 2;
-      pivot.rotation.x = Math.sin((i / n) * Math.PI * 2) * 0.22;
-      pivot.add(mesh);
-
-      this.disposables.push(geometry, material);
-      group.add(pivot);
-      this.quoteOrbitPivots.push(pivot);
+    const byCat = new Map<QuoteClusterId, QuoteRecord[]>();
+    for (const id of QUOTE_CLUSTER_ORDER) {
+      byCat.set(id, []);
     }
+    for (const q of quotes) {
+      byCat.get(this.quoteClusterId(q))!.push(q);
+    }
+
+    const cornerRadius = 8.85;
+
+    for (let ci = 0; ci < QUOTE_CLUSTER_ORDER.length; ci += 1) {
+      const catId = QUOTE_CLUSTER_ORDER[ci];
+      const list = byCat.get(catId)!;
+      if (list.length === 0) {
+        continue;
+      }
+
+      const cluster = new THREE.Group();
+      cluster.name = `quotes-${catId}`;
+
+      if (catId === 'general') {
+        cluster.position.set(0, 0, 0);
+      } else {
+        const [kx, ky, kz] = CLUSTER_CORNER[catId];
+        cluster.position.set(
+          kx * cornerRadius,
+          ky * cornerRadius * 0.55,
+          kz * cornerRadius,
+        );
+      }
+      root.add(cluster);
+
+      const n = list.length;
+      const hubRadius = this.clusterHubRadius(catId, n);
+      const hubSeg = THREE.MathUtils.clamp(Math.floor(26 + Math.sqrt(n) * 1.35), 24, 48);
+      const hubGeom = new THREE.SphereGeometry(hubRadius, hubSeg, hubSeg);
+      const hubMat = new THREE.MeshStandardMaterial({
+        color: CLUSTER_HUB_COLOR[catId],
+        emissive: CLUSTER_HUB_COLOR[catId],
+        emissiveIntensity: 0.16 + 0.05 * Math.min(1, n / 180),
+        metalness: 0.32,
+        roughness: 0.38,
+      });
+      this.disposables.push(hubGeom, hubMat);
+      const hub = new THREE.Mesh(hubGeom, hubMat);
+      hub.userData['clusterId'] = catId;
+      cluster.add(hub);
+
+      const charMin = Math.min(...list.map((q) => q.char_count));
+      const charMax = Math.max(...list.map((q) => q.char_count));
+      const charSpan = Math.max(1, charMax - charMin);
+
+      /** More quotes ⇒ more orbital shells so constellations “breathe” with size. */
+      const shellCeil = catId === 'general' ? 13 : 9;
+      const perShell =
+        catId === 'general' ? 22 + 48 / Math.max(hubRadius, 0.4) : 16 + 30 / Math.max(hubRadius, 0.3);
+      const shellCount = THREE.MathUtils.clamp(Math.ceil(n / perShell), 1, shellCeil);
+      const innerGap =
+        hubRadius * 0.55 + 0.44 + Math.sqrt(Math.max(n, 1)) * (catId === 'general' ? 0.032 : 0.026);
+      const shellStep = THREE.MathUtils.clamp(
+        (catId === 'general' ? 0.19 : 0.15) + hubRadius * 0.07 + (n > 80 ? 0.04 : 0),
+        0.13,
+        0.44,
+      );
+      const shellRadii: number[] = [];
+      for (let s = 0; s < shellCount; s += 1) {
+        shellRadii.push(innerGap + s * shellStep);
+      }
+
+      const crowd = THREE.MathUtils.clamp(n / (catId === 'general' ? 240 : 85), 0, 1);
+      const radiusMin = 0.03 - crowd * 0.006;
+      const radiusMax = 0.105 - crowd * 0.028;
+
+      const golden = Math.PI * (3 - Math.sqrt(5));
+
+      for (let i = 0; i < n; i += 1) {
+        const quote = list[i];
+        const tChar = charSpan > 0 ? (quote.char_count - charMin) / charSpan : 0.5;
+        const microR = radiusMin + tChar * (radiusMax - radiusMin);
+
+        const geometry = new THREE.SphereGeometry(microR, 20, 20);
+        const hue = this.stringToHue(quote.id);
+        const color = new THREE.Color().setHSL(hue, 0.6, 0.57);
+        const material = new THREE.MeshStandardMaterial({
+          color,
+          emissive: color.clone().multiplyScalar(0.32),
+          emissiveIntensity: 0.42,
+          metalness: 0.2,
+          roughness: 0.5,
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        const shellIndex = i % shellCount;
+        const orbitR = shellRadii[shellIndex] ?? innerGap;
+        mesh.position.set(orbitR, 0, 0);
+        mesh.userData['quoteId'] = quote.id;
+        mesh.userData['slug'] = quote.slug;
+        mesh.userData['quote'] = quote.quote;
+        mesh.userData['author'] = quote.author;
+        mesh.userData['clusterId'] = catId;
+
+        const pivot = new THREE.Object3D();
+        const yTurn = golden * i + shellIndex * 0.85;
+        pivot.rotation.y = yTurn;
+        pivot.rotation.x = Math.sin(yTurn * 0.68) * (catId === 'general' ? 0.36 : 0.26);
+        pivot.add(mesh);
+
+        this.disposables.push(geometry, material);
+        cluster.add(pivot);
+        this.quoteOrbitPivots.push(pivot);
+      }
+    }
+
+    this.frameClustersInView();
   }
 
   private stringToHue(input: string): number {
