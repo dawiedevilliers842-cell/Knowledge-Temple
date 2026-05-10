@@ -20,7 +20,7 @@ export class TechnologyStack {
   }
 
   private loadTechnologyItems(): void {
-    void fetch('/technologies-used/technologies.json')
+    void fetch('./technologies-used/technologies.json')
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Failed to load technology history (${response.status})`);

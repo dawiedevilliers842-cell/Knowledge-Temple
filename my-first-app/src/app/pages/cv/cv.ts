@@ -149,7 +149,7 @@ export class Cv {
   }
 
   private loadEmploymentHistory(): void {
-    void fetch('/employment-history/employment-history.json')
+    void fetch('./employment-history/employment-history.json')
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Failed to load employment history (${response.status})`);

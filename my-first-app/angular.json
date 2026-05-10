@@ -29,12 +29,8 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": [
-              "node_modules/parallax-js/dist/parallax.min.js"
-            ]
+            "styles": ["src/styles.scss"],
+            "scripts": ["node_modules/parallax-js/dist/parallax.min.js"]
           },
           "configurations": {
             "production": {
@@ -74,6 +70,9 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }
