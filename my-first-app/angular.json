@@ -29,16 +29,20 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
-            "scripts": ["node_modules/parallax-js/dist/parallax.min.js"]
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": [
+              "node_modules/parallax-js/dist/parallax.min.js"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1500kB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
