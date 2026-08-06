@@ -3,7 +3,7 @@
         <mat-expansion-panel-header>
             <mat-panel-title> {{employmentHistory.company}} </mat-panel-title>
             <mat-panel-description>
-                <p>{{employmentHistory.startDate}} – {{employmentHistory.endDate}}</p>
+                <p class="employment-dates">{{employmentHistory.startDate}} – {{employmentHistory.endDate}}</p>
                 <mat-icon>work</mat-icon>
                 <app-icon-widget [technologies]="employmentHistory.technologies"></app-icon-widget>
             </mat-panel-description>

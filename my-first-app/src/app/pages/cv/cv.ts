@@ -37,7 +37,10 @@ export class Cv {
 
     chart: {
       type: 'bar',
-      backgroundColor: '#121316'
+      backgroundColor: '#121316',
+      style: {
+        minWidth: 100
+      }
     },
     title: {
       text: 'Skills Matrix',
