@@ -10,7 +10,7 @@
       <mat-card-content>
         <p>
           My name is Dawie de Villiers
-          I am a full-time adrenaline junky who likes to code, make music and build Legos
+          I am a full-time adrenaline junky who likes to code, make music and build Legos 🧱
         </p>
       </mat-card-content>
     </mat-card>
@@ -25,19 +25,11 @@
 
 
   @for (technology of technologies(); track technology.name) {
-  <div [attr.data-depth]="technology.depth">
+  <div [attr.data-depth]="technology.depth" class="tech-icon-container">
     <a [href]="technology.url" target="_blank" class="icon-widget-container" rel="noopener noreferrer"
       [style.top.px]="technology.coordinates.top" [style.left.px]="technology.coordinates.left">
       <img class="tech-icon" [src]="technology.image" [alt]="technology.name">
     </a>
   </div>
-
   }
-
-
-
-
-  <!-- <div data-depth="0.1" class="image-container">
-    <img src="images/climb_18.JPG" alt="climb">
-  </div> -->
 </div>

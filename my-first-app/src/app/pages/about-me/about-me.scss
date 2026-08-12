@@ -1,8 +1,6 @@
 .page-card {
   background: rgb(15, 23, 42);
-  // width: fit-content;
   flex: 0 0 50%;
-  // height: 900px;
 }
 
 .content-layer {
@@ -19,10 +17,6 @@
 }
 
 .about-me-container>* {
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
-  // height: 100%;
   display: block;
   height: 100%;
   width: 100%;
@@ -95,4 +89,16 @@
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+@media screen and (max-width: 700px) {
+  .page-card {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .tech-icon-container {
+    display: none !important;
+  }
+
 }
