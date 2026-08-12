@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "release-ghpages": "ng deploy --base-href=/Knowledge-Temple/",
+    "r-gh": "ng deploy --base-href=/Knowledge-Temple/",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
