@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, ElementRef, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { QuoteDataService } from '../../services/quote-data.service';
 import { KeyboardSceneNavigator } from '../../three/controls/keyboard-scene-navigator';
 import { createStarscape } from '../../three/scene/starscape-builder';
 import type { ThreeDisposable } from '../../three/three-disposable';
-import { QuoteDataService } from '../../services/quote-data.service';
 import { QuoteConstellationBuilder } from './quote-constellation-builder';
 import { QuoteHoverController } from './quote-hover-controller';
 
@@ -16,9 +16,12 @@ import { QuoteHoverController } from './quote-hover-controller';
 })
 export class ThreePlayground implements AfterViewInit, OnDestroy {
   @ViewChild('canvasContainer', { static: true }) private canvasContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('cameraLog', { static: true }) private cameraLogRef!: ElementRef<HTMLDivElement>;
   @ViewChild('quoteTooltip', { static: true }) private quoteTooltipRef!: ElementRef<HTMLDivElement>;
   @ViewChild('tooltipQuote', { static: true }) private tooltipQuoteRef!: ElementRef<HTMLParagraphElement>;
   @ViewChild('tooltipAuthor', { static: true }) private tooltipAuthorRef!: ElementRef<HTMLParagraphElement>;
+  @ViewChild('quoteCategory', { static: true }) private quoteCategoryRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('categoryName', { static: true }) private categoryNameRef!: ElementRef<HTMLParagraphElement>;
 
   private readonly ngZone = inject(NgZone);
   private readonly quoteDataService = inject(QuoteDataService);
@@ -80,6 +83,8 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
       tooltip: this.quoteTooltipRef.nativeElement,
       quoteText: this.tooltipQuoteRef.nativeElement,
       authorText: this.tooltipAuthorRef.nativeElement,
+      quoteCategory: this.quoteCategoryRef.nativeElement,
+      categoryText: this.categoryNameRef.nativeElement
     });
 
     this.loadQuotesAndCreateSpheres();
