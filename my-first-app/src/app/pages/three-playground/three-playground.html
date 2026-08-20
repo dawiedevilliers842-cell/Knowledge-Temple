@@ -1,13 +1,16 @@
 <section class="playground-page">
   <div #canvasContainer class="canvas-host" aria-label="Three.js quote constellation canvas">
-    <div
-      #quoteTooltip
-      class="quote-tooltip"
-      role="tooltip"
-      aria-hidden="true"
-    >
+    <div #quoteTooltip class="quote-tooltip" role="tooltip" aria-hidden="true">
       <p #tooltipQuote class="quote-tooltip__text"></p>
       <p #tooltipAuthor class="quote-tooltip__author"></p>
     </div>
+    <div #quoteCategory class="quote-category" role="tooltip" aria-hidden="true">
+      <p #categoryName class="quote-category__text"></p>
+    </div>
+
+  </div>
+
+  <div #cameraLog id="camera-log">
+    Camera data loading...
   </div>
 </section>

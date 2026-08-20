@@ -23,7 +23,8 @@
   background: #0b1020;
 }
 
-.quote-tooltip {
+.quote-tooltip,
+.quote-category {
   position: fixed;
   left: 0;
   top: 0;
@@ -41,7 +42,8 @@
   transition: opacity 0.14s ease, visibility 0.14s ease;
 }
 
-.quote-tooltip.is-visible {
+.quote-tooltip.is-visible,
+.quote-category.is-visible {
   opacity: 1;
   visibility: visible;
 }
@@ -58,4 +60,15 @@
   font-size: 0.78rem;
   letter-spacing: 0.02em;
   color: rgba(200, 214, 255, 0.75);
+}
+
+#camera-log {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  font-family: monospace;
+  z-index: 100;
 }

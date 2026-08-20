@@ -4,6 +4,8 @@ export interface QuoteHoverElements {
   tooltip: HTMLElement;
   quoteText: HTMLElement;
   authorText: HTMLElement;
+  quoteCategory: HTMLElement;
+  categoryText: HTMLElement;
 }
 
 /** Raycast hover + DOM tooltip for quote satellite spheres. */
@@ -14,7 +16,7 @@ export class QuoteHoverController {
   private readonly pointerNdc = new THREE.Vector2(1, 1);
   private readonly worldPosScratch = new THREE.Vector3();
 
-  constructor(private readonly elements: QuoteHoverElements) {}
+  constructor(private readonly elements: QuoteHoverElements) { }
 
   setQuoteGroup(group: THREE.Group | null): void {
     this.quoteGroup = group;
@@ -41,15 +43,21 @@ export class QuoteHoverController {
     this.raycaster.setFromCamera(this.pointerNdc, camera);
     const hits = this.raycaster.intersectObjects(this.quoteGroup.children, true);
     const first = hits.find(
-      (hit) => hit.object instanceof THREE.Mesh && typeof hit.object.userData['quote'] === 'string',
+      (hit) => hit.object instanceof THREE.Mesh
     )?.object;
 
-    if (first instanceof THREE.Mesh && typeof first.userData['quote'] === 'string') {
+    if (first instanceof THREE.Mesh) {
       if (this.hoveredQuoteMesh !== first) {
         this.hoveredQuoteMesh = first;
-        this.elements.quoteText.textContent = first.userData['quote'] as string;
-        this.elements.authorText.textContent = first.userData['author'] as string;
-        this.elements.tooltip.setAttribute('aria-hidden', 'false');
+        if (typeof first.userData['quote'] === 'string') {
+          this.elements.quoteText.textContent = first.userData['quote'] as string;
+          this.elements.authorText.textContent = first.userData['author'] as string;
+          this.elements.tooltip.setAttribute('aria-hidden', 'false');
+        } else if (typeof first.userData['clusterId'] === 'string' && first.userData['hub']) {
+          this.elements.categoryText.textContent = first.userData['clusterId'] as string;
+          this.elements.quoteCategory.setAttribute('aria-hidden', 'false');
+        }
+
       }
       return;
     }
@@ -63,10 +71,15 @@ export class QuoteHoverController {
     this.clearHover();
   }
 
+  updateOverlayPosition() {
+
+  }
+
   updateTooltipPosition(canvas: HTMLCanvasElement, camera: THREE.PerspectiveCamera): void {
-    const { tooltip } = this.elements;
+    const { tooltip, quoteCategory } = this.elements;
     if (!this.hoveredQuoteMesh) {
       tooltip.classList.remove('is-visible');
+      quoteCategory.classList.remove('is-visible');
       return;
     }
 
@@ -77,14 +90,24 @@ export class QuoteHoverController {
     const x = rect.left + (this.worldPosScratch.x * 0.5 + 0.5) * rect.width;
     const y = rect.top + (-this.worldPosScratch.y * 0.5 + 0.5) * rect.height;
 
-    tooltip.style.left = `${x}px`;
-    tooltip.style.top = `${y}px`;
-    tooltip.classList.add('is-visible');
+    if (this.hoveredQuoteMesh.userData['hub']) {
+      quoteCategory.style.left = `${x}px`;
+      quoteCategory.style.top = `${y}px`;
+      quoteCategory.classList.add('is-visible');
+    } else {
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+      tooltip.classList.add('is-visible');
+    }
+
+
   }
 
   private clearHover(): void {
     this.hoveredQuoteMesh = null;
     this.elements.tooltip.classList.remove('is-visible');
     this.elements.tooltip.setAttribute('aria-hidden', 'true');
+    this.elements.quoteCategory.classList.remove('is-visible');
+    this.elements.quoteCategory.setAttribute('aria-hidden', 'true');
   }
 }

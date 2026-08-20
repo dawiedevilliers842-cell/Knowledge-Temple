@@ -19,7 +19,7 @@ export interface QuoteConstellationResult {
 }
 
 export class QuoteConstellationBuilder {
-  constructor(private readonly disposables: ThreeDisposable[]) {}
+  constructor(private readonly disposables: ThreeDisposable[]) { }
 
   build(scene: THREE.Scene, quotes: QuoteRecord[]): QuoteConstellationResult | null {
     if (quotes.length === 0) {
@@ -75,6 +75,7 @@ export class QuoteConstellationBuilder {
 
       const hub = new THREE.Mesh(hubGeom, hubMat);
       hub.userData['clusterId'] = catId;
+      hub.userData['hub'] = 'hub';
       cluster.add(hub);
 
       const charMin = Math.min(...list.map((q) => q.char_count));
