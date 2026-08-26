@@ -27,9 +27,11 @@ export class QuoteConstellationBuilder {
     }
 
     const orbitPivots: THREE.Object3D[] = [];
+    // create the root of the cluster groups
     const root = new THREE.Group();
     scene.add(root);
 
+    // create map of quote categories
     const byCat = new Map<QuoteClusterId, QuoteRecord[]>();
     for (const id of QUOTE_CLUSTER_ORDER) {
       byCat.set(id, []);
@@ -41,19 +43,24 @@ export class QuoteConstellationBuilder {
     const cornerRadius = 8.85;
 
     for (const catId of QUOTE_CLUSTER_ORDER) {
+
+      // if list is empty continue with the loop
       const list = byCat.get(catId)!;
       if (list.length === 0) {
         continue;
       }
 
+      // create a group for every category
       const cluster = new THREE.Group();
       cluster.name = `quotes-${catId}`;
 
+      // centre the general category, place the other categories in the corners
       if (catId === 'general') {
         cluster.position.set(0, 0, 0);
       } else {
         const [kx, ky, kz] = CLUSTER_CORNER[catId];
-        cluster.position.set(kx * cornerRadius, ky * cornerRadius * 0.55, kz * cornerRadius);
+        cluster.position.set(kx * cornerRadius, ky * cornerRadius * 0.33, kz * cornerRadius);
+
       }
       root.add(cluster);
 
@@ -82,14 +89,21 @@ export class QuoteConstellationBuilder {
       const charMax = Math.max(...list.map((q) => q.char_count));
       const charSpan = Math.max(1, charMax - charMin);
 
-      const shellCeil = catId === 'general' ? 13 : 9;
+      const shellCeil =
+        catId === 'general' ? 13 : 9;
+      // 13;
+      // 9;
       const perShell =
         catId === 'general' ? 22 + 48 / Math.max(hubRadius, 0.4) : 16 + 30 / Math.max(hubRadius, 0.3);
+      // 22 + 48 / Math.max(hubRadius, 0.4);
+      // 16 + 30 / Math.max(hubRadius, 0.4);
+
       const shellCount = THREE.MathUtils.clamp(Math.ceil(n / perShell), 1, shellCeil);
       const innerGap =
         hubRadius * 0.55 + 0.44 + Math.sqrt(Math.max(n, 1)) * (catId === 'general' ? 0.032 : 0.026);
       const shellStep = THREE.MathUtils.clamp(
-        (catId === 'general' ? 0.19 : 0.15) + hubRadius * 0.07 + (n > 80 ? 0.04 : 0),
+        (catId === 'general' ? 0.19 : 0.15) + hubRadius * 0.07
+        + (n > 80 ? 0.04 : 0),
         0.13,
         0.44,
       );
@@ -99,6 +113,8 @@ export class QuoteConstellationBuilder {
       }
 
       const crowd = THREE.MathUtils.clamp(n / (catId === 'general' ? 240 : 85), 0, 1);
+      // const crowd = THREE.MathUtils.clamp(n / (240), 0, 1);
+
       const radiusMin = 0.03 - crowd * 0.006;
       const radiusMax = 0.105 - crowd * 0.028;
       const golden = Math.PI * (3 - Math.sqrt(5));
@@ -122,7 +138,10 @@ export class QuoteConstellationBuilder {
         const mesh = new THREE.Mesh(geometry, material);
         const shellIndex = i % shellCount;
         const orbitR = shellRadii[shellIndex] ?? innerGap;
+
+        // mesh.position.set(3, 0, 0);
         mesh.position.set(orbitR, 0, 0);
+
         mesh.userData['quoteId'] = quote.id;
         mesh.userData['slug'] = quote.slug;
         mesh.userData['quote'] = quote.quote;
@@ -131,6 +150,11 @@ export class QuoteConstellationBuilder {
 
         const pivot = new THREE.Object3D();
         const yTurn = golden * i + shellIndex * 0.85;
+        console.log("Y turn");
+        console.log(yTurn);
+
+        // const yTurn = golden * 0.85;
+
         pivot.rotation.y = yTurn;
         pivot.rotation.x = Math.sin(yTurn * 0.68) * (catId === 'general' ? 0.36 : 0.26);
         pivot.add(mesh);
@@ -144,6 +168,7 @@ export class QuoteConstellationBuilder {
     return { quoteGroup: root, orbitPivots };
   }
 
+  // Changes the camera position to include the entire quote scene
   frameInView(
     quoteGroup: THREE.Group,
     camera: THREE.PerspectiveCamera,
@@ -160,18 +185,23 @@ export class QuoteConstellationBuilder {
       return;
     }
 
+    // how big is the quote group?
     const sphere = box.getBoundingSphere(new THREE.Sphere());
     const center = sphere.center;
     const radius = Math.max(sphere.radius, 0.6);
 
+    // vertical FOV 
     const vFov = THREE.MathUtils.degToRad(camera.fov);
     const distV = radius / Math.tan(vFov / 2);
+    // horizontal FOV
     const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
     const distH = radius / Math.tan(hFov / 2);
+    // determine which is bigger the V or H distance
     let distance = Math.max(distV, distH) * 1.16;
 
     distance = THREE.MathUtils.clamp(distance, 6, 95);
 
+    // Place the camera 
     const dir = new THREE.Vector3(0.22, 0.16, 1).normalize();
     camera.position.copy(center.clone().add(dir.multiplyScalar(distance)));
 
@@ -194,6 +224,7 @@ export class QuoteConstellationBuilder {
       const base = 0.25;
       const cap = 0.72;
       const blend = 0.5 * (Math.sqrt(count / 88) * 0.38) + 0.5 * (Math.log1p(count) * 0.095);
+      // const blend = 0.5;
       return THREE.MathUtils.clamp(base + blend, base, cap);
     }
     const ref = 34;

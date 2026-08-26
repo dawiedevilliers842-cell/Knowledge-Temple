@@ -42,7 +42,30 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
 
   ngAfterViewInit(): void {
-    const host = this.canvasContainer.nativeElement;
+    this.setup3Js();
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.onResize);
+    this.keyboardNav.detach();
+    this.resizeObserver?.disconnect();
+    this.renderer?.domElement.removeEventListener('pointermove', this.onPointerMove);
+    this.renderer?.domElement.removeEventListener('pointerleave', this.onPointerLeave);
+    this.controls?.dispose();
+
+    if (this.frameId) {
+      cancelAnimationFrame(this.frameId);
+    }
+
+    for (const item of this.disposables) {
+      item.dispose();
+    }
+
+    this.renderer?.dispose();
+  }
+
+  private setup3jsScene(host: HTMLDivElement): void {
+
     const width = host.clientWidth || 900;
     const height = host.clientHeight || 540;
 
@@ -59,11 +82,11 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
-    this.controls.enableRotate = false;
+    this.controls.enableRotate = true;
     this.controls.enablePan = true;
     this.controls.mouseButtons = {
       LEFT: THREE.MOUSE.PAN,
-      MIDDLE: THREE.MOUSE.DOLLY,
+      MIDDLE: THREE.MOUSE.ROTATE,
       RIGHT: THREE.MOUSE.PAN,
     };
     this.controls.minDistance = 1.25;
@@ -87,8 +110,6 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
       categoryText: this.categoryNameRef.nativeElement
     });
 
-    this.loadQuotesAndCreateSpheres();
-
     window.addEventListener('resize', this.onResize);
     this.keyboardNav.attach();
     this.resizeObserver = new ResizeObserver(() => this.onResize());
@@ -100,25 +121,13 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
       canvas.addEventListener('pointerleave', this.onPointerLeave);
       this.animate();
     });
+
   }
 
-  ngOnDestroy(): void {
-    window.removeEventListener('resize', this.onResize);
-    this.keyboardNav.detach();
-    this.resizeObserver?.disconnect();
-    this.renderer?.domElement.removeEventListener('pointermove', this.onPointerMove);
-    this.renderer?.domElement.removeEventListener('pointerleave', this.onPointerLeave);
-    this.controls?.dispose();
-
-    if (this.frameId) {
-      cancelAnimationFrame(this.frameId);
-    }
-
-    for (const item of this.disposables) {
-      item.dispose();
-    }
-
-    this.renderer?.dispose();
+  private setup3Js(): void {
+    const host = this.canvasContainer.nativeElement;
+    this.setup3jsScene(host);
+    this.loadQuotesAndCreateSpheres();
   }
 
   private createDirectionalLight(): THREE.DirectionalLight {
@@ -140,8 +149,10 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
           return;
         }
 
+
         this.quoteGroup = result.quoteGroup;
         this.quoteOrbitPivots = result.orbitPivots;
+
         this.quoteHover?.setQuoteGroup(this.quoteGroup);
         this.constellationBuilder.frameInView(this.quoteGroup, this.camera, this.controls);
       })
@@ -194,7 +205,13 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
       }
 
       const orbitSpeed = 0.32;
+
       for (const pivot of this.quoteOrbitPivots) {
+        // const orbitSpeed = this.camera.position.distanceTo(pivot.position) / 100;
+        if (this.renderer.info.render.frame % 60 === 0) {
+          console.log(orbitSpeed);
+        }
+
         pivot.rotation.y += orbitSpeed * delta;
       }
     }
@@ -203,7 +220,36 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
     this.quoteHover?.updateTooltipPosition(this.renderer.domElement, this.camera);
 
     this.controls.update();
+    this.updateCameraLog();
     this.renderer.render(this.scene, this.camera);
     this.frameId = requestAnimationFrame(() => this.animate());
+  }
+
+  private updateCameraLog(): void {
+    if (!this.cameraLogRef.nativeElement || !this.camera || !this.renderer) {
+      return;
+    }
+
+    const pos = this.camera.position;
+    const rot = this.camera.rotation;
+
+    const logText = `
+    <b>Position:</b><br>
+    X: ${pos.x.toFixed(2)}<br>
+    Y: ${pos.y.toFixed(2)}<br>
+    Z: ${pos.z.toFixed(2)}<br>
+    <b>Rotation (Rad):</b><br>
+    X: ${rot.x.toFixed(2)}<br>
+    Y: ${rot.y.toFixed(2)}<br>
+    Z: ${rot.z.toFixed(2)}<br>
+    <b>Distance to:</b><br>
+    General: ${rot.x.toFixed(2)}<br>
+  `;
+
+    this.cameraLogRef.nativeElement.innerHTML = logText;
+
+    if (this.renderer.info.render.frame % 60 === 0) {
+      // console.log(`Pos: X:${pos.x.toFixed(1)} Y:${pos.y.toFixed(1)} Z:${pos.z.toFixed(1)}`);
+    }
   }
 }
