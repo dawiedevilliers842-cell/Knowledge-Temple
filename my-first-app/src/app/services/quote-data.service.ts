@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import type { QuoteRecord, QuotesManifest } from '../pages/three-playground/models/quote.types';
+import { QuoteRecord, QuotesManifest } from '../pages/quotes-constellation/models/quote.types';
+
 
 @Injectable({ providedIn: 'root' })
 export class QuoteDataService {

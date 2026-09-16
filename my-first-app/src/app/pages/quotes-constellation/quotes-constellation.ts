@@ -5,14 +5,16 @@ import { QuoteDataService } from '../../services/quote-data.service';
 import { KeyboardSceneNavigator } from '../../three/controls/keyboard-scene-navigator';
 import { createStarscape } from '../../three/scene/starscape-builder';
 import type { ThreeDisposable } from '../../three/three-disposable';
+import { QuoteConstellationBuilder } from './quote-constellation-builder';
+import { QuoteHoverController } from './quote-hover-controller';
 
 @Component({
-  selector: 'app-three-playground',
+  selector: 'app-quotes-constellation',
   imports: [],
-  templateUrl: './three-playground.html',
-  styleUrl: './three-playground.scss',
+  templateUrl: './quotes-constellation.html',
+  styleUrl: './quotes-constellation.scss',
 })
-export class ThreePlayground implements AfterViewInit, OnDestroy {
+export class QuotesConstellation implements AfterViewInit, OnDestroy {
   @ViewChild('canvasContainer', { static: true }) private canvasContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('cameraLog', { static: true }) private cameraLogRef!: ElementRef<HTMLDivElement>;
   @ViewChild('quoteTooltip', { static: true }) private quoteTooltipRef!: ElementRef<HTMLDivElement>;
@@ -33,6 +35,8 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   private quoteOrbitPivots: THREE.Object3D[] = [];
   private readonly disposables: ThreeDisposable[] = [];
   private readonly keyboardNav = new KeyboardSceneNavigator();
+  private quoteHover?: QuoteHoverController;
+  private constellationBuilder?: QuoteConstellationBuilder;
   private readonly clock = new THREE.Clock();
   private frameId?: number;
   private resizeObserver?: ResizeObserver;
@@ -67,15 +71,13 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color('#0b1020');
-    this.scene.background = null;
 
     this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 2000);
     this.camera.position.set(0, 1.2, 14);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(width, height);
-    this.renderer.setClearColor(0x000000, 0);
     host.appendChild(this.renderer.domElement);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -99,6 +101,15 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
     const starscape = createStarscape(this.scene, this.disposables);
     this.starMaterial = starscape.material;
 
+    this.constellationBuilder = new QuoteConstellationBuilder(this.disposables);
+    this.quoteHover = new QuoteHoverController({
+      tooltip: this.quoteTooltipRef.nativeElement,
+      quoteText: this.tooltipQuoteRef.nativeElement,
+      authorText: this.tooltipAuthorRef.nativeElement,
+      quoteCategory: this.quoteCategoryRef.nativeElement,
+      categoryText: this.categoryNameRef.nativeElement
+    });
+
     window.addEventListener('resize', this.onResize);
     this.keyboardNav.attach();
     this.resizeObserver = new ResizeObserver(() => this.onResize());
@@ -116,12 +127,38 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   private setup3Js(): void {
     const host = this.canvasContainer.nativeElement;
     this.setup3jsScene(host);
+    this.loadQuotesAndCreateSpheres();
   }
 
   private createDirectionalLight(): THREE.DirectionalLight {
     const directionalLight = new THREE.DirectionalLight(0x9ec8ff, 1.3);
     directionalLight.position.set(2, 3, 4);
     return directionalLight;
+  }
+
+  private loadQuotesAndCreateSpheres(): void {
+    void this.quoteDataService
+      .loadAll()
+      .then((quotes) => {
+        if (!this.scene || !this.camera || !this.controls || !this.constellationBuilder) {
+          return;
+        }
+
+        const result = this.constellationBuilder.build(this.scene, quotes);
+        if (!result) {
+          return;
+        }
+
+
+        this.quoteGroup = result.quoteGroup;
+        this.quoteOrbitPivots = result.orbitPivots;
+
+        this.quoteHover?.setQuoteGroup(this.quoteGroup);
+        this.constellationBuilder.frameInView(this.quoteGroup, this.camera, this.controls);
+      })
+      .catch((error: unknown) => {
+        console.error(error);
+      });
   }
 
   private readonly onResize = (): void => {
@@ -142,14 +179,15 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
   };
 
   private readonly onPointerMove = (event: PointerEvent): void => {
-    if (!this.renderer || !this.camera) {
+    if (!this.renderer || !this.camera || !this.quoteHover) {
       return;
     }
 
+    this.quoteHover.handlePointerMove(event, this.renderer.domElement, this.camera);
   };
 
   private readonly onPointerLeave = (): void => {
-
+    this.quoteHover?.handlePointerLeave();
   };
 
   private animate(): void {
@@ -159,29 +197,59 @@ export class ThreePlayground implements AfterViewInit, OnDestroy {
 
     const delta = Math.min(this.clock.getDelta(), 0.05);
     const t = this.clock.getElapsedTime();
+    const motionPaused = this.quoteHover?.isHovering ?? false;
 
-    if (this.starMaterial) {
-      this.starMaterial.opacity = 0.42 + 0.18 * (0.5 + 0.5 * Math.sin(t * 0.9));
-    }
-
-    const orbitSpeed = 0.32;
-
-    for (const pivot of this.quoteOrbitPivots) {
-      // const orbitSpeed = this.camera.position.distanceTo(pivot.position) / 100;
-      if (this.renderer.info.render.frame % 60 === 0) {
-        console.log(orbitSpeed);
+    if (!motionPaused) {
+      if (this.starMaterial) {
+        this.starMaterial.opacity = 0.42 + 0.18 * (0.5 + 0.5 * Math.sin(t * 0.9));
       }
 
-      pivot.rotation.y += orbitSpeed * delta;
+      const orbitSpeed = 0.32;
+
+      for (const pivot of this.quoteOrbitPivots) {
+        // const orbitSpeed = this.camera.position.distanceTo(pivot.position) / 100;
+        if (this.renderer.info.render.frame % 60 === 0) {
+          console.log(orbitSpeed);
+        }
+
+        pivot.rotation.y += orbitSpeed * delta;
+      }
     }
 
     this.keyboardNav.applyMovement(delta, this.camera, this.controls);
+    this.quoteHover?.updateTooltipPosition(this.renderer.domElement, this.camera);
 
     this.controls.update();
-
+    this.updateCameraLog();
     this.renderer.render(this.scene, this.camera);
     this.frameId = requestAnimationFrame(() => this.animate());
   }
 
+  private updateCameraLog(): void {
+    if (!this.cameraLogRef.nativeElement || !this.camera || !this.renderer) {
+      return;
+    }
 
+    const pos = this.camera.position;
+    const rot = this.camera.rotation;
+
+    const logText = `
+    <b>Position:</b><br>
+    X: ${pos.x.toFixed(2)}<br>
+    Y: ${pos.y.toFixed(2)}<br>
+    Z: ${pos.z.toFixed(2)}<br>
+    <b>Rotation (Rad):</b><br>
+    X: ${rot.x.toFixed(2)}<br>
+    Y: ${rot.y.toFixed(2)}<br>
+    Z: ${rot.z.toFixed(2)}<br>
+    <b>Distance to:</b><br>
+    General: ${rot.x.toFixed(2)}<br>
+  `;
+
+    this.cameraLogRef.nativeElement.innerHTML = logText;
+
+    if (this.renderer.info.render.frame % 60 === 0) {
+      // console.log(`Pos: X:${pos.x.toFixed(1)} Y:${pos.y.toFixed(1)} Z:${pos.z.toFixed(1)}`);
+    }
+  }
 }

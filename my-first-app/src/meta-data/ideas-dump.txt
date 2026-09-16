@@ -16,6 +16,15 @@ Cool ideas hmmm
 3) seperate routes nested below for standalone pages like quots and the body schematics later
 4) Website has to have miltestones! Like markers and markers are also release ready prototypes 
 
+I like the idea of adding a font ICON to every heading to symbolize what the heading represents, widget or emoji etc 
+This website can start following the same folder structure as evernote to simplify some things 
+I have allot of work to do... I need to work harder
+
+Building an infinite scrolling page with some random generator might be cool - I actually just want to better understand infinite scrolling tbh
+its cancer though lol
+
+Learning websockets should also be a priority
+
 
 3JS full course 
 https://threejs-journey.com/#
