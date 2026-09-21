@@ -5,15 +5,6 @@ Terrain
 - render basic Terrain
 - Place items ons terrain 
 
-Tasks 2D labels
-
-- After that add breadcrumbs to navigate to different planet coordinates 
-
-Scene intro 
-- Zoom in slowly from a distance to the scene
-
-
-
 MVP quote constellation
 - Custom styles for different planets
 - Nice mesh for each sphere 
@@ -21,12 +12,16 @@ MVP quote constellation
 - Responsive 
 
 To Do
-- Disable the quotes when hovering over the hub (think about what this should do? Maybe display the hidden label)
-- Get nice texture/meshes for every planet that fits the theme of the planet
-- add appropriate styles for every sub category
 - Slow zoom in animation on scene load
+- add appropriate styles for every sub category
+
+- display the hidden label whne hovering over the hub
+- Get nice texture/meshes for every planet that fits the theme of the planet
 - Test responsiveness
+- add breadcrumbs to navigate to different planet coordinates 
+- Mouse controls widget 
 
 Done
 - Render multiple 2d labels above every constellations hub - Check good job 09/21
 - After than remove the labels on certain zoom levels - Check 09/21
+- Disable the quotes when hovering over the hub - Check 09/21
