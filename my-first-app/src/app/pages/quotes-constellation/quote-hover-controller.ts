@@ -45,9 +45,9 @@ export class QuoteHoverController {
     )?.object;
 
     if (first instanceof THREE.Mesh) {
-      if (this.hoveredQuoteMesh !== first) {
+      if (this.hoveredQuoteMesh !== first && !first.userData['hub']) {
         this.hoveredQuoteMesh = first;
-        if (typeof first.userData['quote'] === 'string' && !first.userData['hub']) {
+        if (typeof first.userData['quote'] === 'string') {
           this.elements.quoteText.textContent = first.userData['quote'] as string;
           this.elements.authorText.textContent = first.userData['author'] as string;
           this.elements.tooltip.setAttribute('aria-hidden', 'false');

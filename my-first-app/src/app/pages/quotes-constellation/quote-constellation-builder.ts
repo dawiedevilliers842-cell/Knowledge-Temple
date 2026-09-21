@@ -85,6 +85,7 @@ export class QuoteConstellationBuilder {
       hub.userData['clusterId'] = catId;
       hub.userData['hub'] = 'hub';
 
+
       // 4. Create HTML Label Element & CSS2DObject
       const p = document.createElement('div');
       p.className = 'label';
@@ -94,7 +95,7 @@ export class QuoteConstellationBuilder {
       if (catId === 'general') {
         c2d.position.set(0, 1.8, 0);
       } else {
-        c2d.position.set(0, 1.2, 0); // Position slightly above the cube
+        c2d.position.set(0, 1, 0);
       }
 
       hub.add(c2d);
