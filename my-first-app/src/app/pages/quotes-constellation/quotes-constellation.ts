@@ -227,17 +227,26 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     }
 
     //render labels
-    const generalDistance = this.camera.position.z;
-    if (generalDistance < 15 && this.quoteGroup) {
-      this.quoteGroup.children.forEach(element => {
-        debugger;
-        element.children[0].children[0].visible = false;
-      });
-    } else if (this.quoteGroup) {
-      this.quoteGroup.children.forEach(element => {
-        element.children[0].children[0].visible = true;
-      });
+
+    // const generalDistance = this.camera.position.z;
+
+    if (this.quoteGroup) {
+
+      const generalDistance = this.camera.position.distanceTo(this.quoteGroup.children[0].children[0].position);
+
+      if (generalDistance < 15) {
+        this.quoteGroup.children.forEach(element => {
+          debugger;
+          element.children[0].children[0].visible = false;
+        });
+      } else {
+        this.quoteGroup.children.forEach(element => {
+          element.children[0].children[0].visible = true;
+        });
+      }
     }
+
+
 
 
 
