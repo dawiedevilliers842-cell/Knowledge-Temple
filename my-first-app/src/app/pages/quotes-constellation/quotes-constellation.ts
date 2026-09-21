@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { QuoteDataService } from '../../services/quote-data.service';
 import { KeyboardSceneNavigator } from '../../three/controls/keyboard-scene-navigator';
 import { createStarscape } from '../../three/scene/starscape-builder';
@@ -20,7 +21,6 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
   @ViewChild('quoteTooltip', { static: true }) private quoteTooltipRef!: ElementRef<HTMLDivElement>;
   @ViewChild('tooltipQuote', { static: true }) private tooltipQuoteRef!: ElementRef<HTMLParagraphElement>;
   @ViewChild('tooltipAuthor', { static: true }) private tooltipAuthorRef!: ElementRef<HTMLParagraphElement>;
-  @ViewChild('quoteCategory', { static: true }) private quoteCategoryRef!: ElementRef<HTMLDivElement>;
   @ViewChild('categoryName', { static: true }) private categoryNameRef!: ElementRef<HTMLParagraphElement>;
 
   private readonly ngZone = inject(NgZone);
@@ -40,6 +40,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
   private readonly clock = new THREE.Clock();
   private frameId?: number;
   private resizeObserver?: ResizeObserver;
+  private labelRenderer!: CSS2DRenderer;
 
   ngAfterViewInit(): void {
     this.setup3Js();
@@ -80,6 +81,14 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.renderer.setSize(width, height);
     host.appendChild(this.renderer.domElement);
 
+    // 2. CSS2D Renderer Setup
+    this.labelRenderer = new CSS2DRenderer();
+    this.labelRenderer.setSize(host.clientWidth || 900, host.clientHeight || 540);
+    this.labelRenderer.domElement.style.position = 'absolute';
+    this.labelRenderer.domElement.style.top = '0px';
+    this.labelRenderer.domElement.style.pointerEvents = 'none'; // Allows clicks to pass through
+    host.appendChild(this.labelRenderer.domElement);
+
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
     this.controls.enableRotate = true;
@@ -106,8 +115,6 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
       tooltip: this.quoteTooltipRef.nativeElement,
       quoteText: this.tooltipQuoteRef.nativeElement,
       authorText: this.tooltipAuthorRef.nativeElement,
-      quoteCategory: this.quoteCategoryRef.nativeElement,
-      categoryText: this.categoryNameRef.nativeElement
     });
 
     window.addEventListener('resize', this.onResize);
@@ -149,6 +156,8 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
           return;
         }
 
+        console.log(result);
+
 
         this.quoteGroup = result.quoteGroup;
         this.quoteOrbitPivots = result.orbitPivots;
@@ -162,7 +171,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
   }
 
   private readonly onResize = (): void => {
-    if (!this.renderer || !this.camera) {
+    if (!this.renderer || !this.camera || !this.labelRenderer) {
       return;
     }
 
@@ -176,6 +185,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
+    this.labelRenderer.setSize(width, height);
   };
 
   private readonly onPointerMove = (event: PointerEvent): void => {
@@ -216,12 +226,28 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
       }
     }
 
+    //render labels
+    const generalDistance = this.camera.position.z;
+    if (generalDistance < 15 && this.quoteGroup) {
+      this.quoteGroup.children.forEach(element => {
+        debugger;
+        element.children[0].children[0].visible = false;
+      });
+    } else if (this.quoteGroup) {
+      this.quoteGroup.children.forEach(element => {
+        element.children[0].children[0].visible = true;
+      });
+    }
+
+
+
     this.keyboardNav.applyMovement(delta, this.camera, this.controls);
     this.quoteHover?.updateTooltipPosition(this.renderer.domElement, this.camera);
 
     this.controls.update();
     this.updateCameraLog();
     this.renderer.render(this.scene, this.camera);
+    this.labelRenderer.render(this.scene, this.camera);
     this.frameId = requestAnimationFrame(() => this.animate());
   }
 
@@ -243,7 +269,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     Y: ${rot.y.toFixed(2)}<br>
     Z: ${rot.z.toFixed(2)}<br>
     <b>Distance to:</b><br>
-    General: ${rot.x.toFixed(2)}<br>
+    General: ${pos.x.toFixed(2)}<br>
   `;
 
     this.cameraLogRef.nativeElement.innerHTML = logText;

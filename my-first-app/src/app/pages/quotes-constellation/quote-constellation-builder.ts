@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { createHubProceduralTexture } from '../../three/textures/hub-procedural-textures';
 import { trackDisposable, type ThreeDisposable } from '../../three/three-disposable';
 import {
@@ -83,6 +84,21 @@ export class QuoteConstellationBuilder {
       const hub = new THREE.Mesh(hubGeom, hubMat);
       hub.userData['clusterId'] = catId;
       hub.userData['hub'] = 'hub';
+
+      // 4. Create HTML Label Element & CSS2DObject
+      const p = document.createElement('div');
+      p.className = 'label';
+      p.textContent = catId.charAt(0).toUpperCase() + catId.slice(1);
+
+      const c2d = new CSS2DObject(p);
+      if (catId === 'general') {
+        c2d.position.set(0, 1.8, 0);
+      } else {
+        c2d.position.set(0, 1.2, 0); // Position slightly above the cube
+      }
+
+      hub.add(c2d);
+
       cluster.add(hub);
 
       const charMin = Math.min(...list.map((q) => q.char_count));
