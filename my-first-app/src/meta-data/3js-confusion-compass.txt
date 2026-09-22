@@ -12,11 +12,13 @@ MVP quote constellation
 - Responsive 
 
 To Do
-- Slow zoom in animation on scene load
-- add appropriate styles for every sub category
-
-- display the hidden label whne hovering over the hub
 - Get nice texture/meshes for every planet that fits the theme of the planet
+- add appropriate styles for every sub category to quote div
+- refactor again 
+
+
+- Slow sphere rotation when approaching the hub 
+- display the hidden label whne hovering over the hub
 - Test responsiveness
 - add breadcrumbs to navigate to different planet coordinates 
 - Mouse controls widget 
@@ -25,3 +27,7 @@ Done
 - Render multiple 2d labels above every constellations hub - Check good job 09/21
 - After than remove the labels on certain zoom levels - Check 09/21
 - Disable the quotes when hovering over the hub - Check 09/21
+- Slow zoom in animation on scene load - Check 09/22
+
+Bugs
+- disable controls till this animation is done - Check 09/22

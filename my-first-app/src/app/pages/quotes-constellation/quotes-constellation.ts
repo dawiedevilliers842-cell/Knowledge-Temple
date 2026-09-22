@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { gsap } from 'gsap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
@@ -92,6 +93,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
     this.controls.enableRotate = true;
+    this.controls.enableDamping = true;
     this.controls.enablePan = true;
     this.controls.mouseButtons = {
       LEFT: THREE.MOUSE.PAN,
@@ -131,10 +133,30 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
 
   }
 
+  private startSlowZoom(): void {
+    if (this.camera && this.controls) {
+      // GSAP animation to smoothly move camera closer on the Z-axis
+      this.controls.enabled = false;
+      gsap.to(this.camera.position, {
+        z: 20,               // Target Z position (closer to the object)
+        duration: 3,        // Time in seconds to complete the zoom
+        ease: 'power2.out',
+        onComplete: () => {
+          if (this.controls) {
+            this.controls.enabled = true;
+          }
+        }
+
+      });
+    }
+
+  }
+
   private setup3Js(): void {
     const host = this.canvasContainer.nativeElement;
     this.setup3jsScene(host);
     this.loadQuotesAndCreateSpheres();
+    this.startSlowZoom();
   }
 
   private createDirectionalLight(): THREE.DirectionalLight {
@@ -155,9 +177,6 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
         if (!result) {
           return;
         }
-
-        console.log(result);
-
 
         this.quoteGroup = result.quoteGroup;
         this.quoteOrbitPivots = result.orbitPivots;
@@ -227,16 +246,12 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     }
 
     //render labels
-
-    // const generalDistance = this.camera.position.z;
-
     if (this.quoteGroup) {
 
       const generalDistance = this.camera.position.distanceTo(this.quoteGroup.children[0].children[0].position);
 
       if (generalDistance < 15) {
         this.quoteGroup.children.forEach(element => {
-          debugger;
           element.children[0].children[0].visible = false;
         });
       } else {
@@ -245,10 +260,6 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
         });
       }
     }
-
-
-
-
 
     this.keyboardNav.applyMovement(delta, this.camera, this.controls);
     this.quoteHover?.updateTooltipPosition(this.renderer.domElement, this.camera);

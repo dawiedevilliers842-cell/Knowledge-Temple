@@ -1,0 +1,16 @@
+Knowledge temple pages
+
+Home - check
+About me - check
+Technology stack - check
+Cv - check
+
+Quotes constellation - building
+
+Adventures 
+Legends
+Excercises 
+Book summaries
+Useful apps 
+MUSIC 
+ANATOMY -  a svg layered body image using paralax.js and hover animations, going to be fun to build
