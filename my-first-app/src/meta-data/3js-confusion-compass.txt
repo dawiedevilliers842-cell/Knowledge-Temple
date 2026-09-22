@@ -16,7 +16,6 @@ To Do
 - add appropriate styles for every sub category to quote div
 - refactor again 
 
-
 - Slow sphere rotation when approaching the hub 
 - display the hidden label whne hovering over the hub
 - Test responsiveness
