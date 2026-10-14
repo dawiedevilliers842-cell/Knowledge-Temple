@@ -77,7 +77,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 2000);
     this.camera.position.set(0, 1.2, 14);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(width, height);
     host.appendChild(this.renderer.domElement);

@@ -12,6 +12,7 @@ MVP quote constellation
 - Responsive 
 
 To Do
+- Use normal map to create a textured spere
 - Get nice texture/meshes for every planet that fits the theme of the planet
 - add appropriate styles for every sub category to quote div
 - refactor again 
