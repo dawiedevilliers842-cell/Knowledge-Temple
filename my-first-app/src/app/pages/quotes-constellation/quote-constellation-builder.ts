@@ -55,20 +55,34 @@ export class QuoteConstellationBuilder {
       const cluster = new THREE.Group();
       cluster.name = `quotes-${catId}`;
 
-      // centre the general category, place the other categories in the corners
-      if (catId === 'general') {
+      const n = list.length;
+      const hubRadius = this.clusterHubRadius(catId, n);
+      const hubSeg = THREE.MathUtils.clamp(Math.floor(26 + Math.sqrt(n) * 1.35), 24, 48);
+
+      let hubGeom: THREE.SphereGeometry | THREE.DodecahedronGeometry;
+      const textureLoader = new THREE.TextureLoader();
+      let textureNormalMap = null
+
+      // centre the aether category, place the other categories in the corners
+      if (catId === 'aether') {
         cluster.position.set(0, 0, 0);
+        hubGeom = new THREE.DodecahedronGeometry(hubRadius, 0);
+        textureNormalMap = textureLoader.load('normal-maps/aether.png');
+
+
       } else {
         const [kx, ky, kz] = CLUSTER_CORNER[catId];
         cluster.position.set(kx * cornerRadius, ky * cornerRadius * 0.33, kz * cornerRadius);
+        hubGeom = new THREE.SphereGeometry(hubRadius, hubSeg, hubSeg);
+        textureNormalMap = textureLoader.load('normal-maps/dots.png');
+
+
 
       }
       root.add(cluster);
 
-      const n = list.length;
-      const hubRadius = this.clusterHubRadius(catId, n);
-      const hubSeg = THREE.MathUtils.clamp(Math.floor(26 + Math.sqrt(n) * 1.35), 24, 48);
-      const hubGeom = new THREE.SphereGeometry(hubRadius, hubSeg, hubSeg);
+
+
       const hubTexture = createHubProceduralTexture(CLUSTER_HUB_TEXTURE[catId]);
       const hubTint = new THREE.Color(CLUSTER_HUB_COLOR[catId]);
       const hubMat = new THREE.MeshStandardMaterial({
@@ -78,6 +92,7 @@ export class QuoteConstellationBuilder {
         emissiveIntensity: 0.1 + 0.04 * Math.min(1, n / 180),
         metalness: 0.42,
         roughness: 0.34,
+        normalMap: textureNormalMap,
       });
       trackDisposable(this.disposables, hubGeom, hubMat, hubTexture);
 
@@ -92,7 +107,7 @@ export class QuoteConstellationBuilder {
       p.textContent = catId.charAt(0).toUpperCase() + catId.slice(1);
 
       const c2d = new CSS2DObject(p);
-      if (catId === 'general') {
+      if (catId === 'aether') {
         c2d.position.set(0, 1.8, 0);
       } else {
         c2d.position.set(0, 1, 0);
@@ -107,19 +122,19 @@ export class QuoteConstellationBuilder {
       const charSpan = Math.max(1, charMax - charMin);
 
       const shellCeil =
-        catId === 'general' ? 13 : 9;
+        catId === 'aether' ? 13 : 9;
       // 13;
       // 9;
       const perShell =
-        catId === 'general' ? 22 + 48 / Math.max(hubRadius, 0.4) : 16 + 30 / Math.max(hubRadius, 0.3);
+        catId === 'aether' ? 22 + 48 / Math.max(hubRadius, 0.4) : 16 + 30 / Math.max(hubRadius, 0.3);
       // 22 + 48 / Math.max(hubRadius, 0.4);
       // 16 + 30 / Math.max(hubRadius, 0.4);
 
       const shellCount = THREE.MathUtils.clamp(Math.ceil(n / perShell), 1, shellCeil);
       const innerGap =
-        hubRadius * 0.55 + 0.44 + Math.sqrt(Math.max(n, 1)) * (catId === 'general' ? 0.032 : 0.026);
+        hubRadius * 0.55 + 0.44 + Math.sqrt(Math.max(n, 1)) * (catId === 'aether' ? 0.032 : 0.026);
       const shellStep = THREE.MathUtils.clamp(
-        (catId === 'general' ? 0.19 : 0.15) + hubRadius * 0.07
+        (catId === 'aether' ? 0.19 : 0.15) + hubRadius * 0.07
         + (n > 80 ? 0.04 : 0),
         0.13,
         0.44,
@@ -129,7 +144,7 @@ export class QuoteConstellationBuilder {
         shellRadii.push(innerGap + s * shellStep);
       }
 
-      const crowd = THREE.MathUtils.clamp(n / (catId === 'general' ? 240 : 85), 0, 1);
+      const crowd = THREE.MathUtils.clamp(n / (catId === 'aether' ? 240 : 85), 0, 1);
       // const crowd = THREE.MathUtils.clamp(n / (240), 0, 1);
 
       const radiusMin = 0.03 - crowd * 0.006;
@@ -173,7 +188,7 @@ export class QuoteConstellationBuilder {
         // const yTurn = golden * 0.85;
 
         pivot.rotation.y = yTurn;
-        pivot.rotation.x = Math.sin(yTurn * 0.68) * (catId === 'general' ? 0.36 : 0.26);
+        pivot.rotation.x = Math.sin(yTurn * 0.68) * (catId === 'aether' ? 0.36 : 0.26);
         pivot.add(mesh);
 
         trackDisposable(this.disposables, geometry, material);
@@ -232,12 +247,12 @@ export class QuoteConstellationBuilder {
   }
 
   /**
-   * Hub size scales gently with quote count. General uses a **low hard cap** so it never
+   * Hub size scales gently with quote count. aether uses a **low hard cap** so it never
    * overwhelms the corner constellations; satellites keep a slightly higher relative cap.
    */
   private clusterHubRadius(catId: QuoteClusterId, n: number): number {
     const count = Math.max(n, 1);
-    if (catId === 'general') {
+    if (catId === 'aether') {
       const base = 0.25;
       const cap = 0.72;
       const blend = 0.5 * (Math.sqrt(count / 88) * 0.38) + 0.5 * (Math.log1p(count) * 0.095);

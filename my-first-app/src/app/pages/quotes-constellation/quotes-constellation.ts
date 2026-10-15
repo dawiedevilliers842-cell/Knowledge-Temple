@@ -248,9 +248,9 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     //render labels
     if (this.quoteGroup) {
 
-      const generalDistance = this.camera.position.distanceTo(this.quoteGroup.children[0].children[0].position);
+      const aetherDistance = this.camera.position.distanceTo(this.quoteGroup.children[0].children[0].position);
 
-      if (generalDistance < 15) {
+      if (aetherDistance < 15) {
         this.quoteGroup.children.forEach(element => {
           element.children[0].children[0].visible = false;
         });
@@ -289,7 +289,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     Y: ${rot.y.toFixed(2)}<br>
     Z: ${rot.z.toFixed(2)}<br>
     <b>Distance to:</b><br>
-    General: ${pos.x.toFixed(2)}<br>
+    aether: ${pos.x.toFixed(2)}<br>
   `;
 
     this.cameraLogRef.nativeElement.innerHTML = logText;
