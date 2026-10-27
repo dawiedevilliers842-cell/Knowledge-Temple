@@ -66,7 +66,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.renderer?.dispose();
   }
 
-  private setup3jsScene(host: HTMLDivElement): void {
+  private createSceneCameraRenderer(host: HTMLDivElement) {
 
     const width = host.clientWidth || 900;
     const height = host.clientHeight || 540;
@@ -82,15 +82,40 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.renderer.setSize(width, height);
     host.appendChild(this.renderer.domElement);
 
-    // 2. CSS2D Renderer Setup
+    this.createLabelRenderer(host);
+
+    if (this.camera && this.renderer) {
+      this.createControls(this.camera, this.renderer)
+    }
+
+    this.scene.add(
+      new THREE.AmbientLight(0xffffff, 0.8),
+      this.createDirectionalLight(),
+    );
+
+    const starscape = createStarscape(this.scene, this.disposables);
+    this.starMaterial = starscape.material;
+
+    const canvas = this.renderer.domElement;
+    this.ngZone.runOutsideAngular(() => {
+      canvas.addEventListener('pointermove', this.onPointerMove);
+      canvas.addEventListener('pointerleave', this.onPointerLeave);
+      this.animate();
+    });
+
+  }
+
+  private createLabelRenderer(host: HTMLDivElement) {
     this.labelRenderer = new CSS2DRenderer();
     this.labelRenderer.setSize(host.clientWidth || 900, host.clientHeight || 540);
     this.labelRenderer.domElement.style.position = 'absolute';
     this.labelRenderer.domElement.style.top = '0px';
     this.labelRenderer.domElement.style.pointerEvents = 'none'; // Allows clicks to pass through
     host.appendChild(this.labelRenderer.domElement);
+  }
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+  private createControls(camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer) {
+    this.controls = new OrbitControls(camera, renderer.domElement);
     this.controls.target.set(0, 0, 0);
     this.controls.enableRotate = true;
     this.controls.enableDamping = true;
@@ -103,16 +128,13 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.controls.minDistance = 1.25;
     this.controls.maxDistance = 120;
     this.controls.update();
+  }
 
-    this.scene.add(
-      new THREE.AmbientLight(0xffffff, 0.8),
-      this.createDirectionalLight(),
-    );
+  private setup3jsScene(host: HTMLDivElement): void {
+    this.createSceneCameraRenderer(host);
 
-    const starscape = createStarscape(this.scene, this.disposables);
-    this.starMaterial = starscape.material;
+    this.constellationBuilder = new QuoteConstellationBuilder(this.disposables, this.camera!, this.controls);
 
-    this.constellationBuilder = new QuoteConstellationBuilder(this.disposables, this.camera, this.controls);
     this.quoteHover = new QuoteHoverController({
       tooltip: this.quoteTooltipRef.nativeElement,
       quoteText: this.tooltipQuoteRef.nativeElement,
@@ -123,13 +145,6 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.keyboardNav.attach();
     this.resizeObserver = new ResizeObserver(() => this.onResize());
     this.resizeObserver.observe(host);
-
-    const canvas = this.renderer.domElement;
-    this.ngZone.runOutsideAngular(() => {
-      canvas.addEventListener('pointermove', this.onPointerMove);
-      canvas.addEventListener('pointerleave', this.onPointerLeave);
-      this.animate();
-    });
 
   }
 
@@ -220,7 +235,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
   };
 
   private animate(): void {
-    if (!this.renderer || !this.scene || !this.camera || !this.controls) {
+    if (!this.renderer || !this.scene || !this.camera || !this.controls || !this.labelRenderer) {
       return;
     }
 
