@@ -20,6 +20,7 @@ To Do
 - Test responsiveness
 - Mouse controls widget 
 - Add widget on tablets so you can navigate like the mouse, think sphere with button
+- Add widget (circle or something) that simulates the mouse position so you can toggle the quotes 
 
 Done
 - add breadcrumbs to navigate to different planet coordinates - check 27/10 (Super coool)
