@@ -29,5 +29,7 @@ I want a SVG loader think like PPS horizon or Evernote for my own site.
 
 I like the idea of a 3js or 3d Landscape which changes based on music playing on the site (Mainly my own music)
 
+Medical page with cures for all common ailments - cancer, arthritis, dimentia, Autism
+
 3JS full course 
 https://threejs-journey.com/#

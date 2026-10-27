@@ -1,9 +1,11 @@
+import { gsap } from 'gsap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { createHubProceduralTexture } from '../../three/textures/hub-procedural-textures';
 import { trackDisposable, type ThreeDisposable } from '../../three/three-disposable';
 import {
+  CAMERA_POSITIONS,
   CLUSTER_CORNER,
   CLUSTER_HUB_COLOR,
   CLUSTER_HUB_TEXTURE,
@@ -20,7 +22,7 @@ export interface QuoteConstellationResult {
 }
 
 export class QuoteConstellationBuilder {
-  constructor(private readonly disposables: ThreeDisposable[]) { }
+  constructor(private readonly disposables: ThreeDisposable[], private readonly camera: THREE.PerspectiveCamera, private controls?: OrbitControls) { }
 
   build(scene: THREE.Scene, quotes: QuoteRecord[]): QuoteConstellationResult | null {
     if (quotes.length === 0) {
@@ -59,29 +61,37 @@ export class QuoteConstellationBuilder {
       const hubRadius = this.clusterHubRadius(catId, n);
       const hubSeg = THREE.MathUtils.clamp(Math.floor(26 + Math.sqrt(n) * 1.35), 24, 48);
 
-      let hubGeom: THREE.SphereGeometry | THREE.DodecahedronGeometry;
+      let hubGeom: THREE.SphereGeometry | THREE.WireframeGeometry;
       const textureLoader = new THREE.TextureLoader();
-      let textureNormalMap = null
+      let textureNormalMap = null;
+
+      //#region wireframe test
+      // const fatWireframeGeometry = new WireframeGeometry2(new THREE.DodecahedronGeometry(hubRadius, 0));
+
+      // const lineMaterial = new LineMaterial({
+      //   color: '#3017EA',
+      //   linewidth: 1,
+      //   dashed: false
+      // });
+      // const wireframeMesh = new Wireframe(fatWireframeGeometry, lineMaterial);
+      // wireframeMesh.position.set(2, 0, 0);
+      // scene.add(wireframeMesh);
+
+
+      //#endregion
 
       // centre the aether category, place the other categories in the corners
       if (catId === 'aether') {
         cluster.position.set(0, 0, 0);
-        hubGeom = new THREE.DodecahedronGeometry(hubRadius, 0);
+        hubGeom = new THREE.WireframeGeometry(new THREE.DodecahedronGeometry(hubRadius, 0));
         textureNormalMap = textureLoader.load('normal-maps/aether.png');
-
-
       } else {
         const [kx, ky, kz] = CLUSTER_CORNER[catId];
         cluster.position.set(kx * cornerRadius, ky * cornerRadius * 0.33, kz * cornerRadius);
         hubGeom = new THREE.SphereGeometry(hubRadius, hubSeg, hubSeg);
         textureNormalMap = textureLoader.load('normal-maps/dots.png');
-
-
-
       }
       root.add(cluster);
-
-
 
       const hubTexture = createHubProceduralTexture(CLUSTER_HUB_TEXTURE[catId]);
       const hubTint = new THREE.Color(CLUSTER_HUB_COLOR[catId]);
@@ -93,6 +103,7 @@ export class QuoteConstellationBuilder {
         metalness: 0.42,
         roughness: 0.34,
         normalMap: textureNormalMap,
+        wireframe: catId === 'aether',
       });
       trackDisposable(this.disposables, hubGeom, hubMat, hubTexture);
 
@@ -103,8 +114,40 @@ export class QuoteConstellationBuilder {
 
       // 4. Create HTML Label Element & CSS2DObject
       const p = document.createElement('div');
+
+
       p.className = 'label';
       p.textContent = catId.charAt(0).toUpperCase() + catId.slice(1);
+
+      p.addEventListener('click', () => {
+        console.log(p.textContent + ' clicked');
+        let [kx, ky, kz] = [0, 0, 0];
+
+        [kx, ky, kz] = CAMERA_POSITIONS[catId];
+
+        console.log(kx, ky, kz);
+
+        // this.camera.position.set(kx * cornerRadius, ky * cornerRadius * 0.33, kz * cornerRadius);
+
+        if (this.camera && this.controls) {
+          // GSAP animation to smoothly move camera closer on the Z-axis
+          this.controls.enabled = false;
+          gsap.to(this.camera.position, {
+            x: kx,
+            y: ky,
+            z: kz,               // Target Z position (closer to the object)
+            duration: 3,        // Time in seconds to complete the zoom
+            ease: 'power2.out',
+            onComplete: () => {
+              if (this.controls) {
+                this.controls.enabled = true;
+              }
+            }
+
+          });
+        }
+
+      });
 
       const c2d = new CSS2DObject(p);
       if (catId === 'aether') {
@@ -112,6 +155,8 @@ export class QuoteConstellationBuilder {
       } else {
         c2d.position.set(0, 1, 0);
       }
+
+
 
       hub.add(c2d);
 
@@ -165,6 +210,7 @@ export class QuoteConstellationBuilder {
           emissiveIntensity: 0.42,
           metalness: 0.2,
           roughness: 0.5,
+          wireframe: catId === 'aether',
         });
 
         const mesh = new THREE.Mesh(geometry, material);

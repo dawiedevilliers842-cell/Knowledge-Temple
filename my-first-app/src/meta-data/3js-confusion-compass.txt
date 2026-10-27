@@ -12,18 +12,18 @@ MVP quote constellation
 - Responsive 
 
 To Do
-- Use normal map to create a textured spere
 - Get nice texture/meshes for every planet that fits the theme of the planet
 - add appropriate styles for every sub category to quote div
 - refactor again 
-
 - Slow sphere rotation when approaching the hub 
 - display the hidden label whne hovering over the hub
 - Test responsiveness
-- add breadcrumbs to navigate to different planet coordinates 
 - Mouse controls widget 
+- Add widget on tablets so you can navigate like the mouse, think sphere with button
 
 Done
+- add breadcrumbs to navigate to different planet coordinates - check 27/10 (Super coool)
+- Use normal map to create a textured spere - check 10/10 (Dont really like it too much)
 - Render multiple 2d labels above every constellations hub - Check good job 09/21
 - After than remove the labels on certain zoom levels - Check 09/21
 - Disable the quotes when hovering over the hub - Check 09/21

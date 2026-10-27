@@ -112,7 +112,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     const starscape = createStarscape(this.scene, this.disposables);
     this.starMaterial = starscape.material;
 
-    this.constellationBuilder = new QuoteConstellationBuilder(this.disposables);
+    this.constellationBuilder = new QuoteConstellationBuilder(this.disposables, this.camera, this.controls);
     this.quoteHover = new QuoteHoverController({
       tooltip: this.quoteTooltipRef.nativeElement,
       quoteText: this.tooltipQuoteRef.nativeElement,
@@ -250,15 +250,15 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
 
       const aetherDistance = this.camera.position.distanceTo(this.quoteGroup.children[0].children[0].position);
 
-      if (aetherDistance < 15) {
-        this.quoteGroup.children.forEach(element => {
-          element.children[0].children[0].visible = false;
-        });
-      } else {
-        this.quoteGroup.children.forEach(element => {
-          element.children[0].children[0].visible = true;
-        });
-      }
+      // if (aetherDistance < 15) {
+      //   this.quoteGroup.children.forEach(element => {
+      //     element.children[0].children[0].visible = false;
+      //   });
+      // } else {
+      //   this.quoteGroup.children.forEach(element => {
+      //     element.children[0].children[0].visible = true;
+      //   });
+      // }
     }
 
     this.keyboardNav.applyMovement(delta, this.camera, this.controls);

@@ -57,6 +57,17 @@ export const CLUSTER_CORNER: Record<
   existentialism: [-1, 1, -1],
 };
 
+export const CAMERA_POSITIONS: Record<
+  QuoteClusterId,
+  readonly [number, number, number]
+> = {
+  aether: [3.33, 0.1, 0.2],
+  stoicism: [12.14, 3.12, 9.86],
+  taoism: [-9.49, -2.79, 11.75],
+  buddhism: [11.15, -2.83, -9.41],
+  existentialism: [-12.48, 3.15, -9.70],
+};
+
 export function quoteClusterId(q: QuoteRecord): QuoteClusterId {
   const t = q.tags?.[0];
   if (
