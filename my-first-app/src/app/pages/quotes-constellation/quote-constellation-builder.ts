@@ -1,0 +1,331 @@
+import { gsap } from 'gsap';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { createHubProceduralTexture } from '../../three/textures/hub-procedural-textures';
+import { trackDisposable, type ThreeDisposable } from '../../three/three-disposable';
+import {
+  CAMERA_POSITIONS,
+  CLUSTER_CORNER,
+  CLUSTER_HUB_COLOR,
+  CLUSTER_HUB_TEXTURE,
+  QUOTE_CLUSTER_ORDER,
+  quoteClusterId,
+  stringToHue,
+  type QuoteClusterId,
+  type QuoteRecord,
+} from './models/quote.types';
+
+export interface QuoteConstellationResult {
+  quoteGroup: THREE.Group;
+  orbitPivots: THREE.Object3D[];
+}
+
+export class QuoteConstellationBuilder {
+  constructor(private readonly disposables: ThreeDisposable[], private readonly camera: THREE.PerspectiveCamera, private controls?: OrbitControls) { }
+
+  build(scene: THREE.Scene, quotes: QuoteRecord[]): QuoteConstellationResult | null {
+    if (quotes.length === 0) {
+      return null;
+    }
+
+    let orbitPivots: THREE.Object3D[] = [];
+
+    const root = new THREE.Group();
+    scene.add(root);
+
+    const quoteCategories = this.createQuoteCategories(quotes);
+
+    for (const catId of QUOTE_CLUSTER_ORDER) {
+
+      const list = quoteCategories.get(catId)!;
+      if (list.length === 0) {
+        continue;
+      }
+
+      const cluster = this.createQuoteCluster(catId);
+      root.add(cluster);
+
+      const hub = this.createHub(catId, list);
+      cluster.add(hub);
+
+      orbitPivots = this.createPivots(catId, list, orbitPivots, cluster);
+    }
+
+    return { quoteGroup: root, orbitPivots };
+  }
+
+  // Changes the camera position to include the entire quote scene
+  frameInView(
+    quoteGroup: THREE.Group,
+    camera: THREE.PerspectiveCamera,
+    controls: OrbitControls,
+  ): void {
+    if (quoteGroup.children.length === 0) {
+      return;
+    }
+
+    quoteGroup.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(quoteGroup);
+    const size = box.getSize(new THREE.Vector3());
+    if (!Number.isFinite(size.x) || size.x < 1e-6) {
+      return;
+    }
+
+    // how big is the quote group?
+    const sphere = box.getBoundingSphere(new THREE.Sphere());
+    const center = sphere.center;
+    const radius = Math.max(sphere.radius, 0.6);
+
+    // vertical FOV 
+    const vFov = THREE.MathUtils.degToRad(camera.fov);
+    const distV = radius / Math.tan(vFov / 2);
+    // horizontal FOV
+    const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
+    const distH = radius / Math.tan(hFov / 2);
+    // determine which is bigger the V or H distance
+    let distance = Math.max(distV, distH) * 1.16;
+
+    distance = THREE.MathUtils.clamp(distance, 6, 95);
+
+    // Place the camera 
+    const dir = new THREE.Vector3(0.22, 0.16, 1).normalize();
+    camera.position.copy(center.clone().add(dir.multiplyScalar(distance)));
+
+    camera.near = Math.max(0.06, distance * 0.0015);
+    camera.far = Math.max(distance * 40, 800);
+    camera.updateProjectionMatrix();
+
+    controls.target.copy(center);
+    controls.maxDistance = Math.max(96, distance * 2.4);
+    controls.update();
+  }
+
+  /**
+   * Hub size scales gently with quote count. aether uses a **low hard cap** so it never
+   * overwhelms the corner constellations; satellites keep a slightly higher relative cap.
+   */
+  private clusterHubRadius(catId: QuoteClusterId, n: number): number {
+    const count = Math.max(n, 1);
+    if (catId === 'aether') {
+      const base = 0.25;
+      const cap = 0.72;
+      const blend = 0.5 * (Math.sqrt(count / 88) * 0.38) + 0.5 * (Math.log1p(count) * 0.095);
+      // const blend = 0.5;
+      return THREE.MathUtils.clamp(base + blend, base, cap);
+    }
+    const ref = 34;
+    const base = 0.2;
+    const cap = 0.95;
+    const grow = (Math.sqrt(count) / Math.sqrt(ref)) * 0.4;
+    return THREE.MathUtils.clamp(base + grow, base, cap);
+  }
+
+  private createHub(catId: QuoteClusterId, list: QuoteRecord[]): THREE.Mesh {
+    if (catId !== 'aether') {
+      debugger;
+    }
+
+    const n = list.length;
+
+    let hubGeom: THREE.SphereGeometry | THREE.WireframeGeometry;
+    const textureLoader = new THREE.TextureLoader();
+    let textureNormalMap = null;
+
+    const hubRadius = this.clusterHubRadius(catId, n);
+    const hubSeg = THREE.MathUtils.clamp(Math.floor(26 + Math.sqrt(n) * 1.35), 24, 48);
+
+    // centre the aether category, place the other categories in the corners
+    if (catId === 'aether') {
+      hubGeom = new THREE.WireframeGeometry(new THREE.DodecahedronGeometry(hubRadius, 0));
+      textureNormalMap = textureLoader.load('normal-maps/aether.png');
+    } else {
+      const [kx, ky, kz] = CLUSTER_CORNER[catId];
+      hubGeom = new THREE.SphereGeometry(hubRadius, hubSeg, hubSeg);
+      textureNormalMap = textureLoader.load('normal-maps/dots.png');
+    }
+
+    const hubTexture = createHubProceduralTexture(CLUSTER_HUB_TEXTURE[catId]);
+    const hubTint = new THREE.Color(CLUSTER_HUB_COLOR[catId]);
+    const hubMat = new THREE.MeshStandardMaterial({
+      map: hubTexture,
+      color: '#ffffff',
+      emissive: hubTint,
+      emissiveIntensity: 0.1 + 0.04 * Math.min(1, n / 180),
+      metalness: 0.42,
+      roughness: 0.34,
+      normalMap: textureNormalMap,
+      wireframe: catId === 'aether',
+    });
+    trackDisposable(this.disposables, hubGeom, hubMat, hubTexture);
+
+    const hub = new THREE.Mesh(hubGeom, hubMat);
+    hub.userData['clusterId'] = catId;
+    hub.userData['hub'] = 'hub';
+
+    const label = this.createLabel(catId);
+
+    hub.add(label);
+
+    return hub;
+
+  }
+
+  private createLabel(catId: QuoteClusterId): CSS2DObject {
+
+    const p = document.createElement('div');
+    p.className = 'label';
+    p.textContent = catId.charAt(0).toUpperCase() + catId.slice(1);
+
+    p.addEventListener('click', () => {
+      console.log(p.textContent + ' clicked');
+      let [kx, ky, kz] = [0, 0, 0];
+
+      [kx, ky, kz] = CAMERA_POSITIONS[catId];
+
+      console.log(kx, ky, kz);
+
+      // this.camera.position.set(kx * cornerRadius, ky * cornerRadius * 0.33, kz * cornerRadius);
+
+      if (this.camera && this.controls) {
+        // GSAP animation to smoothly move camera closer on the Z-axis
+        this.controls.enabled = false;
+        gsap.to(this.camera.position, {
+          x: kx,
+          y: ky,
+          z: kz,               // Target Z position (closer to the object)
+          duration: 3,        // Time in seconds to complete the zoom
+          ease: 'power2.out',
+          onComplete: () => {
+            if (this.controls) {
+              this.controls.enabled = true;
+            }
+          }
+
+        });
+      }
+
+    });
+
+    const c2d = new CSS2DObject(p);
+    if (catId === 'aether') {
+      c2d.position.set(0, 1.8, 0);
+    } else {
+      c2d.position.set(0, 1, 0);
+    }
+
+    return c2d;
+  }
+
+  private createPivots(catId: QuoteClusterId, list: QuoteRecord[], orbitPivots: THREE.Object3D[], cluster: THREE.Group): THREE.Object3D[] {
+
+    const n = list.length;
+    const hubRadius = this.clusterHubRadius(catId, n);
+
+    const charMin = Math.min(...list.map((q) => q.char_count));
+    const charMax = Math.max(...list.map((q) => q.char_count));
+    const charSpan = Math.max(1, charMax - charMin);
+
+    const shellCeil =
+      catId === 'aether' ? 13 : 9;
+
+    const perShell =
+      catId === 'aether' ? 22 + 48 / Math.max(hubRadius, 0.4) : 16 + 30 / Math.max(hubRadius, 0.3);
+
+    const shellCount = THREE.MathUtils.clamp(Math.ceil(n / perShell), 1, shellCeil);
+    const innerGap =
+      hubRadius * 0.55 + 0.44 + Math.sqrt(Math.max(n, 1)) * (catId === 'aether' ? 0.032 : 0.026);
+    const shellStep = THREE.MathUtils.clamp(
+      (catId === 'aether' ? 0.19 : 0.15) + hubRadius * 0.07
+      + (n > 80 ? 0.04 : 0),
+      0.13,
+      0.44,
+    );
+    const shellRadii: number[] = [];
+    for (let s = 0; s < shellCount; s += 1) {
+      shellRadii.push(innerGap + s * shellStep);
+    }
+
+    const crowd = THREE.MathUtils.clamp(n / (catId === 'aether' ? 240 : 85), 0, 1);
+    const radiusMin = 0.03 - crowd * 0.006;
+    const radiusMax = 0.105 - crowd * 0.028;
+    const golden = Math.PI * (3 - Math.sqrt(5));
+
+    for (let i = 0; i < n; i += 1) {
+      const quote = list[i];
+      const tChar = charSpan > 0 ? (quote.char_count - charMin) / charSpan : 0.5;
+      const microR = radiusMin + tChar * (radiusMax - radiusMin);
+
+      const geometry = new THREE.SphereGeometry(microR, 20, 20);
+      const hue = stringToHue(quote.id);
+      const color = new THREE.Color().setHSL(hue, 0.6, 0.57);
+      const material = new THREE.MeshStandardMaterial({
+        color,
+        emissive: color.clone().multiplyScalar(0.32),
+        emissiveIntensity: 0.42,
+        metalness: 0.2,
+        roughness: 0.5,
+        wireframe: catId === 'aether',
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      const shellIndex = i % shellCount;
+      const orbitR = shellRadii[shellIndex] ?? innerGap;
+
+      // mesh.position.set(3, 0, 0);
+      mesh.position.set(orbitR, 0, 0);
+
+      mesh.userData['quoteId'] = quote.id;
+      mesh.userData['slug'] = quote.slug;
+      mesh.userData['quote'] = quote.quote;
+      mesh.userData['author'] = quote.author;
+      mesh.userData['clusterId'] = catId;
+
+      const pivot = new THREE.Object3D();
+      const yTurn = golden * i + shellIndex * 0.85;
+
+      pivot.rotation.y = yTurn;
+      pivot.rotation.x = Math.sin(yTurn * 0.68) * (catId === 'aether' ? 0.36 : 0.26);
+      pivot.add(mesh);
+
+      trackDisposable(this.disposables, geometry, material);
+      cluster.add(pivot);
+      orbitPivots.push(pivot);
+
+    }
+    return orbitPivots;
+
+  }
+
+  private createQuoteCategories(quotes: QuoteRecord[]): Map<QuoteClusterId, QuoteRecord[]> {
+    // create map of quote categories
+    const byCat = new Map<QuoteClusterId, QuoteRecord[]>();
+    for (const id of QUOTE_CLUSTER_ORDER) {
+      byCat.set(id, []);
+    }
+
+    for (const quote of quotes) {
+      byCat.get(quoteClusterId(quote))!.push(quote);
+    }
+
+    return byCat;
+  }
+
+  private createQuoteCluster(catId: QuoteClusterId) {
+
+    const cornerRadius = 8.85;
+
+    // create a group for every category
+    const cluster = new THREE.Group();
+    cluster.name = `quotes-${catId}`;
+
+    if (catId === 'aether') {
+      cluster.position.set(0, 0, 0);
+    } else {
+      const [kx, ky, kz] = CLUSTER_CORNER[catId];
+      cluster.position.set(kx * cornerRadius, ky * cornerRadius * 0.33, kz * cornerRadius);
+    }
+
+    return cluster;
+  }
+}

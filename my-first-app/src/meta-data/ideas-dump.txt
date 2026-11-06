@@ -16,6 +16,20 @@ Cool ideas hmmm
 3) seperate routes nested below for standalone pages like quots and the body schematics later
 4) Website has to have miltestones! Like markers and markers are also release ready prototypes 
 
+I like the idea of adding a font ICON to every heading to symbolize what the heading represents, widget or emoji etc 
+This website can start following the same folder structure as evernote to simplify some things 
+I have allot of work to do... I need to work harder
+
+Building an infinite scrolling page with some random generator might be cool - I actually just want to better understand infinite scrolling tbh
+its cancer though lol
+
+Learning websockets should also be a priority
+
+I want a SVG loader think like PPS horizon or Evernote for my own site.
+
+I like the idea of a 3js or 3d Landscape which changes based on music playing on the site (Mainly my own music)
+
+Medical page with cures for all common ailments - cancer, arthritis, dimentia, Autism
 
 3JS full course 
 https://threejs-journey.com/#

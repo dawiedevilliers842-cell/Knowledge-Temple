@@ -12,4 +12,19 @@ https://braydenfriesen.com/
 
 https://oakharborwebdesigns.com/
 - Implemented the tiles sort of but overall nice clean website 
+
+https://www.sanity.io/
+- Cool contextual side navigation for a region of the site - Neato 
+
+https://huyml.co/
+- PHENOMENAL use of GSAP and SVGS. A bit cluttered but exceptional site with allot of great uses of stuff 
+
+https://matvoyce.tv/
+- The scrolling of the video and it going behind and over the text is PHENOMENAL I need to do this somehow for the landing page
+
+https://multiplestates.co.uk/?tag=Video
+- This is a nice way to maybe have an alternative way to display the quotes or related data maybe yotube urls
+
+https://www.hardfiberglassdidgeridoo.com/tutorials.html
+- Andrea Furlan has some great links to other didge teachers, I would love to do the same (I should make some tutorials!)
     

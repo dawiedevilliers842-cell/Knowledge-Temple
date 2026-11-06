@@ -1,0 +1,39 @@
+Research these topics 
+
+Terrain
+- Heightmap 
+- render basic Terrain
+- Place items ons terrain 
+
+MVP quote constellation
+- Custom styles for different planets
+- Nice mesh for each sphere 
+- Slow zoom into scene on page load 
+- Responsive 
+
+To Do
+- Slow sphere rotation when approaching the hub 
+- Get nice texture/meshes for every planet that fits the theme of the planet
+- Display quotes while pointer hovers (not moving the pointer, Think about this in theory doesnt work)
+
+- add appropriate styles for every sub category to quote div
+
+- display the hidden label while hovering over the hub
+- Test responsiveness
+
+TABLET specific - Defer for now
+- Mouse controls widget 
+- Add widget on tablets so you can navigate like the mouse, think sphere with button
+- Add widget (circle or something) that simulates the mouse position so you can toggle the quotes 
+
+Done
+- refactor again - check 27/10
+- add breadcrumbs to navigate to different planet coordinates - check 27/10 (Super coool)
+- Use normal map to create a textured spere - check 10/10 (Dont really like it too much)
+- Render multiple 2d labels above every constellations hub - Check good job 09/21
+- After than remove the labels on certain zoom levels - Check 09/21
+- Disable the quotes when hovering over the hub - Check 09/21
+- Slow zoom in animation on scene load - Check 09/22
+
+Bugs
+- disable controls till this animation is done - Check 09/22
