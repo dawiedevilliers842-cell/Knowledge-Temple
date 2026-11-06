@@ -110,6 +110,7 @@ export class QuotesConstellation implements AfterViewInit, OnDestroy {
     this.labelRenderer.setSize(host.clientWidth || 900, host.clientHeight || 540);
     this.labelRenderer.domElement.style.position = 'absolute';
     this.labelRenderer.domElement.style.top = '0px';
+    this.labelRenderer.domElement.style.cursor = 'pointer';
     this.labelRenderer.domElement.style.pointerEvents = 'none'; // Allows clicks to pass through
     host.appendChild(this.labelRenderer.domElement);
   }
