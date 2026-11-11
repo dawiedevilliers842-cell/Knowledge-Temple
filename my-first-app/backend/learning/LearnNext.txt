@@ -1,0 +1,8 @@
+Learning next 
+
+1. Database to use with next 
+2. Host Database
+3. Migrate the Quotes
+
+Research
+1. Proper way to structure mono repos
