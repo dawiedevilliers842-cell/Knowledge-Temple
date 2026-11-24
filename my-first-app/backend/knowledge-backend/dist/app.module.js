@@ -11,6 +11,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { Quote } from './quotes/entities/quote.entity.js';
 import { QuotesModule } from './quotes/quotes.module.js';
+import { SeedService } from './seed/seed.service.js';
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 let AppModule = class AppModule {
 };
@@ -35,7 +36,7 @@ AppModule = __decorate([
             QuotesModule,
         ],
         controllers: [AppController],
-        providers: [AppService],
+        providers: [AppService, SeedService],
     })
 ], AppModule);
 export { AppModule };

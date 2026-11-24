@@ -8,6 +8,7 @@ export declare class QuotesService {
     create(createQuoteDto: CreateQuoteDto): Promise<CreateQuoteDto & Quote>;
     findAll(): Promise<Quote[]>;
     findOne(id: number): Promise<Quote | null>;
+    findCategory(category: string): Promise<Quote[]>;
     update(id: number, updateQuoteDto: UpdateQuoteDto): Promise<import("typeorm").UpdateResult>;
     remove(id: number): Promise<import("typeorm").DeleteResult>;
 }

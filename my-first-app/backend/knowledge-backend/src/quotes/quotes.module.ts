@@ -7,5 +7,6 @@ import { QuotesService } from './quotes.service.js';
   imports: [TypeOrmModule.forFeature([Quote])],
   controllers: [QuotesController],
   providers: [QuotesService],
+  exports: [TypeOrmModule.forFeature([Quote])],
 })
 export class QuotesModule { }

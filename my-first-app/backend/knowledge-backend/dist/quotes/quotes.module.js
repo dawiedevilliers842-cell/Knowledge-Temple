@@ -16,6 +16,7 @@ QuotesModule = __decorate([
         imports: [TypeOrmModule.forFeature([Quote])],
         controllers: [QuotesController],
         providers: [QuotesService],
+        exports: [TypeOrmModule.forFeature([Quote])],
     })
 ], QuotesModule);
 export { QuotesModule };

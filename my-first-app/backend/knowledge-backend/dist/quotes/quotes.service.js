@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ArrayContainedBy, ArrayContains, Repository } from 'typeorm';
 import { Quote } from './entities/quote.entity.js';
 let QuotesService = class QuotesService {
     quoteRepository;
@@ -27,6 +27,18 @@ let QuotesService = class QuotesService {
     }
     findOne(id) {
         return this.quoteRepository.findOneBy({ id });
+    }
+    findCategory(category) {
+        if (category === '') {
+            return this.quoteRepository.findBy({
+                tags: ArrayContainedBy([]),
+            });
+            ;
+        }
+        return this.quoteRepository.findBy({
+            tags: ArrayContains([category]),
+        });
+        ;
     }
     update(id, updateQuoteDto) {
         return this.quoteRepository.update({ id }, updateQuoteDto);

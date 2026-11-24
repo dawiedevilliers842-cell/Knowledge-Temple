@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ArrayContainedBy, ArrayContains, Repository } from 'typeorm';
 import { CreateQuoteDto } from './dto/create-quote.dto.js';
 import { UpdateQuoteDto } from './dto/update-quote.dto.js';
 import { Quote } from './entities/quote.entity.js';
@@ -23,6 +23,19 @@ export class QuotesService {
 
   findOne(id: number) {
     return this.quoteRepository.findOneBy({ id });
+  }
+
+  findCategory(category: string) {
+
+    if (category === '') {
+      return this.quoteRepository.findBy({
+        tags: ArrayContainedBy([]),
+      });;
+    }
+
+    return this.quoteRepository.findBy({
+      tags: ArrayContains([category]),
+    });;
   }
 
   update(id: number, updateQuoteDto: UpdateQuoteDto) {

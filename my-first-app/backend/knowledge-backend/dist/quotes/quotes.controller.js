@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { QuotesService } from './quotes.service.js';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateQuoteDto } from './dto/create-quote.dto.js';
 import { UpdateQuoteDto } from './dto/update-quote.dto.js';
+import { QuotesService } from './quotes.service.js';
 let QuotesController = class QuotesController {
     quotesService;
     constructor(quotesService) {
@@ -24,6 +24,12 @@ let QuotesController = class QuotesController {
     }
     findAll() {
         return this.quotesService.findAll();
+    }
+    findGeneral() {
+        return this.quotesService.findCategory('');
+    }
+    findCategory(category) {
+        return this.quotesService.findCategory(category);
     }
     findOne(id) {
         return this.quotesService.findOne(+id);
@@ -48,6 +54,19 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], QuotesController.prototype, "findAll", null);
+__decorate([
+    Get('category'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], QuotesController.prototype, "findGeneral", null);
+__decorate([
+    Get('category/:category'),
+    __param(0, Param('category')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], QuotesController.prototype, "findCategory", null);
 __decorate([
     Get(':id'),
     __param(0, Param('id')),
