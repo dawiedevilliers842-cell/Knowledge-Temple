@@ -1,0 +1,16 @@
+Learning nest 
+
+3. Migrate the Quotes - loading...
+4. Write script to migrate all the Quotes
+5. How to save images on database/ server?
+6. Update the constellation to use the data from the service 
+7. Create the controllers for the other topics - determine the next topic, breathing maybe?
+
+Done
+
+1. Database to use with next - PostGress Check
+2. Host Database - check
+
+
+Research
+1. Proper way to structure mono repos
